@@ -49,28 +49,26 @@ params:
   UseHugoToc: true
   comments: false
   math: true
-
+  
   profileMode:
     enabled: true
     title: Liam Powell
     subtitle: "I’m a senior at Duke and Duke Kunshan, completing a dual degree in Global Health and Public Policy. With hands-on experience at USAID and FHI 360, I am passionate about strengthening healthcare systems, advancing international policy, and integrating urban design and behavior change research into health equity solutions. I’m actively seeking full-time opportunities in international development and public health, starting in summer 2025."
-    imageUrl: "headshot.jpg"  # Replace with your image
+    imageUrl: "headshot.jpg"
     imageWidth: 160
     imageHeight: 160
 
- socialIcons:
-  - name: "cv"
-    url: "/cv.pdf"
-  - name: "email"
-    url: "mailto:liampowell29198@gmail.com"
-  - name: "github"
-    url: "https://github.com/liampwl"
-  - name: "instagram"
-    url: "https://instagram.com/liam.pwl"
-  - name: "linkedin"
-    url: "https://linkedin.com/in/williampwl"
-  # - name: "google-scholar"
-  #   url: "https://scholar.google.com/"
+  socialIcons:
+    - name: "cv"
+      url: "/cv.pdf"
+    - name: "email"
+      url: "mailto:liampowell29198@gmail.com"
+    - name: "github"
+      url: "https://github.com/liampwl"
+    - name: "instagram"
+      url: "https://instagram.com/liam.pwl"
+    - name: "linkedin"
+      url: "https://linkedin.com/in/williampwl"
 
 assets:
   disableScrollBarStyle: true
