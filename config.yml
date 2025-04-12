@@ -60,7 +60,7 @@ params:
 
   socialIcons:
     - name: "cv"
-      url: "/cv.pdf"
+      url: "/resume.pdf"
     - name: "email"
       url: "mailto:liampowell29198@gmail.com"
     - name: "github"
