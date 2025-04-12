@@ -1,0 +1,97 @@
+baseURL: "https://liampwl.com"  # change to https://liampwl.com once DNS is set up
+title: Liam Powell
+theme: PaperMod
+
+enableInlineShortcodes: true
+enableRobotsTXT: true
+
+taxonomies:
+  tag: tags
+
+menu:
+  main:
+    - name: Papers
+      url: papers/
+      weight: 2
+    - name: Projects
+      url: projects/
+      weight: 3
+    - name: Data
+      url: data/
+      weight: 4
+    - name: Blog
+      url: blog/
+      weight: 5
+    - name: Archive
+      url: archive/
+      weight: 6
+
+params:
+  description: "I’m a senior at Duke and Duke Kunshan, completing a dual degree in Global Health and Public Policy. With hands-on experience at USAID and FHI 360, I am passionate about strengthening healthcare systems, advancing international policy, and integrating urban design and behavior change research into health equity solutions. I’m actively seeking full-time opportunities in international development and public health, starting in summer 2025."
+  author: Liam Powell
+  DateFormat: "January 2006"
+  defaultTheme: light
+  hideFooter: false
+  disableThemeToggle: true
+  ShowShareButtons: false
+  ShowReadingTime: false
+  disableSpecial1stPost: true
+  disableAnchoredHeadings: true
+  ShowPostNavLinks: false
+  ShowBreadCrumbs: false
+  ShowCodeCopyButtons: true
+  ShowAllPagesInArchive: true
+  MainSections: []
+  ShowToc: false
+  disableScrollToTop: true
+  TocOpen: true
+  ShowWordCount: false
+  UseHugoToc: true
+  comments: false
+  math: true
+
+  profileMode:
+    enabled: true
+    title: Liam Powell
+    subtitle: "I’m a senior at Duke and Duke Kunshan, completing a dual degree in Global Health and Public Policy. With hands-on experience at USAID and FHI 360, I am passionate about strengthening healthcare systems, advancing international policy, and integrating urban design and behavior change research into health equity solutions. I’m actively seeking full-time opportunities in international development and public health, starting in summer 2025."
+    imageUrl: "headshot.jpg"  # Replace with your image
+    imageWidth: 160
+    imageHeight: 160
+
+ socialIcons:
+  - name: "cv"
+    url: "/cv.pdf"
+  - name: "email"
+    url: "mailto:liampowell29198@gmail.com"
+  - name: "github"
+    url: "https://github.com/liampwl"
+  - name: "instagram"
+    url: "https://instagram.com/liam.pwl"
+  - name: "linkedin"
+    url: "https://linkedin.com/in/williampwl"
+  # - name: "google-scholar"
+  #   url: "https://scholar.google.com/"
+
+assets:
+  disableScrollBarStyle: true
+
+cover:
+  hiddenInList: false
+  hiddenInSingle: true
+
+label:
+  text: "Liam Powell"
+  icon: favicon.ico
+  iconHeight: 18
+
+markup:
+  goldmark:
+    renderer:
+      unsafe: true
+  highlight:
+    guessSyntax: true
+    style: autumn
+  tableOfContents:
+    endLevel: 2
+    ordered: false
+    startLevel: 2
