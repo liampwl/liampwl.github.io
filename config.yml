@@ -27,7 +27,7 @@ menu:
       weight: 6
 
 params:
-  description: "I’m a senior at Duke and Duke Kunshan, completing a dual degree in Global Health and Public Policy. With hands-on experience at USAID and FHI 360, I am passionate about strengthening healthcare systems, advancing international policy, and integrating urban design and behavior change research into health equity solutions. I’m actively seeking full-time opportunities in international development and public health, starting in summer 2025."
+  description: "Incoming MPH candidate at UNC Gillings School of Global Public Health, specializing in global health policy and program evaluation. With hands-on experience at FHI 360 and USAID-funded initiatives, I bridge academic insight with field application to drive impactful health outcomes. Passionate about leveraging data and cross-sector collaboration to inform policy and strengthen health systems in low- and middle-income countries. Seeking to collaborate on projects that translate research into actionable strategies."
   author: Liam Powell
   DateFormat: "January 2006"
   defaultTheme: light
@@ -53,7 +53,7 @@ params:
   profileMode:
     enabled: true
     title: Liam Powell
-    subtitle: "I’m a senior at Duke and Duke Kunshan, completing a dual degree in Global Health and Public Policy. With hands-on experience at USAID and FHI 360, I am passionate about strengthening healthcare systems, advancing international policy, and integrating urban design and behavior change research into health equity solutions. I’m actively seeking full-time opportunities in international development and public health, starting in summer 2025."
+    subtitle: "Incoming MPH candidate at UNC Gillings School of Global Public Health, specializing in global health policy and program evaluation. With hands-on experience at FHI 360 and USAID-funded initiatives, I bridge academic insight with field application to drive impactful health outcomes. Passionate about leveraging data and cross-sector collaboration to inform policy and strengthen health systems in low- and middle-income countries. Seeking to collaborate on projects that translate research into actionable strategies."
     imageUrl: "headshot.jpg"
     imageWidth: 160
     imageHeight: 160
