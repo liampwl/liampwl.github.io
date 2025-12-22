@@ -27,7 +27,7 @@ menu:
       weight: 6
 
 params:
-  description: "Incoming MPH candidate at UNC Gillings School of Global Public Health, specializing in global health policy and program evaluation. With hands-on experience at FHI 360 and USAID-funded initiatives, I bridge academic insight with field application to drive impactful health outcomes. Passionate about leveraging data and cross-sector collaboration to inform policy and strengthen health systems in low- and middle-income countries. Seeking to collaborate on projects that translate research into actionable strategies."
+  description: "MPH candidate at UNC Gillings School of Global Public Health, specializing in global health policy and program evaluation. With hands-on experience at FHI 360 and USAID-funded initiatives, I bridge academic insight with field application to drive impactful health outcomes. Passionate about leveraging data and cross-sector collaboration to inform policy and strengthen health systems in low- and middle-income countries. Seeking to collaborate on projects that translate research into actionable strategies."
   author: Liam Powell
   DateFormat: "January 2006"
   defaultTheme: light
@@ -53,7 +53,9 @@ params:
   profileMode:
     enabled: true
     title: Liam Powell
-    subtitle: "Incoming MPH candidate at UNC Gillings School of Global Public Health, specializing in global health policy and program evaluation. With hands-on experience at FHI 360 and USAID-funded initiatives, I bridge academic insight with field application to drive impactful health outcomes. Passionate about leveraging data and cross-sector collaboration to inform policy and strengthen health systems in low- and middle-income countries. Seeking to collaborate on projects that translate research into actionable strategies."
+    subtitle: "I’m a first-year MPH candidate at UNC Gillings, specializing in global health policy and program evaluation. My current work with the Water Institute focuses on WASH in healthcare facilities, building on prior experience with handwashing programs at FHI 360, USAID-funded HIV/AIDS initiatives, and clinical systems at Carilion Clinic.
+
+Previously, I studied at Duke Kunshan University, where I gained cross-cultural experience that continues to shape my perspective. I’m building on these early experiences to strengthen my technical skills in program evaluation and systems analysis, with the goal of contributing to effective, locally led approaches in international development and health systems."
     imageUrl: "headshot.jpg"
     imageWidth: 160
     imageHeight: 160
