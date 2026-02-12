@@ -1,0 +1,81 @@
+---
+interface Props {
+  class?: string;
+}
+
+const { class: className = '' } = Astro.props;
+---
+
+<div class:list={['gradient-blob', className]} aria-hidden="true">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+</div>
+
+<style>
+  .gradient-blob {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  .blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.4;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .blob {
+      animation: none !important;
+    }
+  }
+
+  .blob-1 {
+    width: 600px;
+    height: 600px;
+    background: var(--gradient-start);
+    top: -10%;
+    right: -5%;
+    animation: drift1 20s ease-in-out infinite;
+  }
+
+  .blob-2 {
+    width: 500px;
+    height: 500px;
+    background: var(--gradient-mid);
+    bottom: -5%;
+    left: -10%;
+    animation: drift2 25s ease-in-out infinite;
+  }
+
+  .blob-3 {
+    width: 400px;
+    height: 400px;
+    background: var(--gradient-end);
+    top: 30%;
+    left: 40%;
+    animation: drift3 22s ease-in-out infinite;
+  }
+
+  @keyframes drift1 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(-40px, 30px) scale(1.05); }
+    66% { transform: translate(20px, -20px) scale(0.95); }
+  }
+
+  @keyframes drift2 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(30px, -40px) scale(1.08); }
+    66% { transform: translate(-20px, 20px) scale(0.92); }
+  }
+
+  @keyframes drift3 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(-30px, -20px) scale(1.1); }
+    66% { transform: translate(40px, 30px) scale(0.9); }
+  }
+</style>

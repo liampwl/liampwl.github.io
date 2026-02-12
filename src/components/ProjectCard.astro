@@ -1,0 +1,157 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  tags: string[];
+  date: string;
+  url?: string;
+  github?: string;
+  association?: string;
+}
+
+const { title, description, tags, date, url, github, association } = Astro.props;
+---
+
+<div class="project-card">
+  <div class="project-top">
+    <span class="project-date">{date}</span>
+    {association && <span class="project-assoc">{association}</span>}
+  </div>
+
+  <h3 class="project-title">{title}</h3>
+  <p class="project-desc">{description}</p>
+
+  <div class="project-bottom">
+    <div class="project-tags">
+      {tags.map((tag) => (
+        <span class="project-tag">{tag}</span>
+      ))}
+    </div>
+
+    {(url || github) && (
+      <div class="project-links">
+        {url && (
+          <a href={url} target="_blank" rel="noopener noreferrer" class="project-link">
+            View
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="7" y1="17" x2="17" y2="7"></line>
+              <polyline points="7 7 17 7 17 17"></polyline>
+            </svg>
+          </a>
+        )}
+        {github && (
+          <a href={github} target="_blank" rel="noopener noreferrer" class="project-link">
+            GitHub
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="7" y1="17" x2="17" y2="7"></line>
+              <polyline points="7 7 17 7 17 17"></polyline>
+            </svg>
+          </a>
+        )}
+      </div>
+    )}
+  </div>
+</div>
+
+<style>
+  .project-card {
+    padding: 1.5rem;
+    border: 1px solid var(--color-border);
+    border-radius: 1rem;
+    background-color: var(--color-bg-secondary);
+    transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .project-card:hover {
+    border-color: var(--color-border-hover);
+    box-shadow: 0 0 40px var(--color-accent-glow);
+    transform: translateY(-2px);
+  }
+
+  .project-top {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .project-date {
+    font-size: var(--text-micro);
+    color: var(--color-text-tertiary);
+  }
+
+  .project-assoc {
+    font-size: var(--text-micro);
+    color: var(--color-text-tertiary);
+    padding: 0.15rem 0.5rem;
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+  }
+
+  .project-title {
+    font-family: var(--font-body);
+    font-size: var(--text-heading);
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin-bottom: 0.5rem;
+    line-height: var(--leading-snug);
+  }
+
+  .project-desc {
+    font-size: var(--text-small);
+    color: var(--color-text-secondary);
+    line-height: var(--leading-normal);
+    margin-bottom: 1.25rem;
+    flex-grow: 1;
+  }
+
+  .project-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .project-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .project-tag {
+    font-size: var(--text-micro);
+    padding: 0.15rem 0.5rem;
+    border-radius: 999px;
+    border: 1px solid var(--color-border);
+    color: var(--color-text-tertiary);
+    transition: border-color 0.2s;
+  }
+
+  .project-card:hover .project-tag {
+    border-color: var(--color-border-hover);
+  }
+
+  .project-links {
+    display: flex;
+    gap: 0.75rem;
+  }
+
+  .project-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: var(--text-micro);
+    font-weight: 500;
+    color: var(--color-accent);
+    transition: gap 0.2s;
+  }
+
+  .project-link:hover {
+    gap: 0.5rem;
+  }
+</style>

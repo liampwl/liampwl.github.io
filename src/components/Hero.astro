@@ -1,0 +1,163 @@
+---
+import GradientBlob from './GradientBlob.astro';
+import SocialLinks from './SocialLinks.astro';
+import { Image } from 'astro:assets';
+import headshot from '../assets/headshot.jpg';
+---
+
+<section class="hero" id="hero">
+  <GradientBlob />
+
+  <div class="hero-inner container">
+    <div class="hero-text">
+      <h1 class="hero-name">Liam Powell</h1>
+      <p class="hero-tagline">
+        Global health policy. Program evaluation.<br />
+        <span class="accent">MPH candidate at UNC Gillings.</span>
+      </p>
+      <div class="hero-social">
+        <SocialLinks size="lg" />
+      </div>
+    </div>
+
+    <div class="hero-image">
+      <div class="hero-image-wrapper">
+        <Image
+          src={headshot}
+          alt="Liam Powell"
+          width={480}
+          height={480}
+          format="webp"
+          quality={85}
+          loading="eager"
+          fetchpriority="high"
+        />
+      </div>
+    </div>
+  </div>
+
+  <div class="scroll-indicator" aria-hidden="true">
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 6rem 0 4rem;
+  }
+
+  .hero-inner {
+    display: grid;
+    gap: 3rem;
+    align-items: center;
+  }
+
+  @media (min-width: 768px) {
+    .hero-inner {
+      grid-template-columns: 1.2fr 1fr;
+      gap: 4rem;
+    }
+  }
+
+  .hero-name {
+    font-size: var(--text-hero);
+    font-style: italic;
+    line-height: 1;
+    margin-bottom: 1.25rem;
+    letter-spacing: -0.02em;
+  }
+
+  .hero-tagline {
+    font-family: var(--font-body);
+    font-size: clamp(1.1rem, 2vw, 1.35rem);
+    line-height: var(--leading-snug);
+    color: var(--color-text-secondary);
+    margin-bottom: 2rem;
+  }
+
+  .accent {
+    color: var(--color-accent);
+  }
+
+  .hero-social {
+    margin-top: 0.5rem;
+  }
+
+  /* Image */
+  .hero-image {
+    display: flex;
+    justify-content: center;
+  }
+
+  .hero-image-wrapper {
+    position: relative;
+    width: clamp(240px, 40vw, 400px);
+    aspect-ratio: 1;
+    border-radius: 1.5rem;
+    overflow: hidden;
+    box-shadow:
+      0 0 0 1px var(--color-border),
+      0 0 60px var(--color-accent-glow);
+    transition: box-shadow 0.4s ease;
+  }
+
+  .hero-image-wrapper:hover {
+    box-shadow:
+      0 0 0 1px var(--color-border-hover),
+      0 0 80px var(--color-accent-glow);
+  }
+
+  .hero-image-wrapper :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Scroll indicator */
+  .scroll-indicator {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .scroll-line {
+    width: 1px;
+    height: 48px;
+    background: linear-gradient(to bottom, var(--color-accent), transparent);
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 0.3; transform: scaleY(0.6); }
+    50% { opacity: 1; transform: scaleY(1); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .scroll-line {
+      animation: none;
+      opacity: 0.5;
+    }
+  }
+
+  /* Mobile: stack with image on top */
+  @media (max-width: 767px) {
+    .hero-inner {
+      text-align: center;
+    }
+
+    .hero-image {
+      order: -1;
+    }
+
+    .hero-social {
+      justify-content: center;
+      display: flex;
+    }
+  }
+</style>

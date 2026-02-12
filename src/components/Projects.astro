@@ -1,0 +1,42 @@
+---
+import ProjectCard from './ProjectCard.astro';
+import { projects } from '../data/projects';
+---
+
+<section class="projects" id="projects">
+  <div class="container">
+    <span class="section-label reveal">Projects</span>
+    <h2 class="section-title reveal">Selected work</h2>
+
+    <div class="projects-grid">
+      {projects.map((project, i) => (
+        <div class="reveal" style={`transition-delay: ${i * 0.1}s`}>
+          <ProjectCard {...project} />
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .projects {
+    border-top: 1px solid var(--color-border);
+  }
+
+  .projects-grid {
+    display: grid;
+    gap: 1.25rem;
+  }
+
+  @media (min-width: 768px) {
+    .projects-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .projects-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>

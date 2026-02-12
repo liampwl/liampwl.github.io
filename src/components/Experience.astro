@@ -1,0 +1,31 @@
+---
+import ExperienceCard from './ExperienceCard.astro';
+import { experience } from '../data/experience';
+---
+
+<section class="experience" id="experience">
+  <div class="container">
+    <span class="section-label reveal">Experience</span>
+    <h2 class="section-title reveal">Where I've worked</h2>
+
+    <div class="exp-list">
+      {experience.map((entry, i) => (
+        <div class="reveal" style={`transition-delay: ${i * 0.1}s`}>
+          <ExperienceCard {...entry} />
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .experience {
+    border-top: 1px solid var(--color-border);
+  }
+
+  .exp-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+</style>

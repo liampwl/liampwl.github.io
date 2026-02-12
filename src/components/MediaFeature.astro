@@ -1,0 +1,114 @@
+---
+---
+
+<section class="media-feature" id="media">
+  <div class="media-bg" aria-hidden="true"></div>
+  <div class="container">
+    <span class="section-label reveal">In the Media</span>
+
+    <div class="media-card reveal">
+      <div class="media-badge">
+        <span class="media-source">NPR</span>
+        <span class="media-type">Education</span>
+      </div>
+
+      <h2 class="media-headline">
+        Featured in NPR's report on 2025 college graduates navigating an uncertain future
+      </h2>
+
+      <p class="media-excerpt">
+        Profiled as one of three graduating seniors on how federal hiring freezes and policy
+        realignments reshaped career plans for students in global health and international development.
+      </p>
+
+      <a
+        href="https://www.npr.org/2025/06/26/nx-s1-5423377/2025-college-graduates-worried-about-future"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="media-link"
+      >
+        Read the full story
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="7" y1="17" x2="17" y2="7"></line>
+          <polyline points="7 7 17 7 17 17"></polyline>
+        </svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .media-feature {
+    position: relative;
+    border-top: 1px solid var(--color-border);
+    overflow: hidden;
+  }
+
+  .media-bg {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      135deg,
+      var(--color-accent-glow) 0%,
+      transparent 50%,
+      rgba(99, 102, 241, 0.05) 100%
+    );
+    pointer-events: none;
+  }
+
+  .media-card {
+    position: relative;
+    max-width: 720px;
+  }
+
+  .media-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .media-source {
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: var(--text-body);
+    color: var(--color-accent);
+    letter-spacing: 0.05em;
+  }
+
+  .media-type {
+    font-size: var(--text-micro);
+    color: var(--color-text-tertiary);
+    padding: 0.2rem 0.5rem;
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+  }
+
+  .media-headline {
+    font-size: var(--text-display);
+    font-style: italic;
+    line-height: var(--leading-snug);
+    margin-bottom: 1.25rem;
+  }
+
+  .media-excerpt {
+    font-size: var(--text-body);
+    color: var(--color-text-secondary);
+    line-height: var(--leading-relaxed);
+    margin-bottom: 2rem;
+  }
+
+  .media-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 500;
+    font-size: var(--text-small);
+    color: var(--color-accent);
+    transition: gap 0.2s;
+  }
+
+  .media-link:hover {
+    gap: 0.75rem;
+  }
+</style>
