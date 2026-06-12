@@ -5,8 +5,8 @@ interface Props {
 }
 
 const {
-  title = 'Liam Powell — Global Health & Public Policy',
-  description = 'Liam Powell is an MPH candidate at UNC Gillings School of Global Public Health, specializing in global health policy, program evaluation, and international development.',
+  title = 'Liam Powell — Global Health',
+  description = 'Liam Powell is a second-year MPH candidate at UNC Gillings focused on global health implementation and health systems, with work centered on HIV/AIDS and WASH.',
 } = Astro.props;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
@@ -54,32 +54,12 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400..600&family=Public+Sans:wght@400;500;600&display=swap"
       rel="stylesheet"
     />
   </head>
 
   <body>
     <slot />
-
-    <!-- Scroll reveal observer -->
-    <script is:inline>
-      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        const observer = new IntersectionObserver(
-          (entries) => {
-            entries.forEach((entry) => {
-              if (entry.isIntersecting) {
-                entry.target.classList.add('visible');
-                observer.unobserve(entry.target);
-              }
-            });
-          },
-          { threshold: 0.1, rootMargin: '0px 0px -40px 0px' }
-        );
-        document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
-      } else {
-        document.querySelectorAll('.reveal').forEach((el) => el.classList.add('visible'));
-      }
-    </script>
   </body>
 </html>

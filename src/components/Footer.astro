@@ -1,39 +1,54 @@
 ---
-import SocialLinks from './SocialLinks.astro';
 ---
 
-<footer class="footer">
+<footer class="footer" id="contact">
   <div class="container">
-    <div class="footer-inner">
-      <SocialLinks size="sm" />
-      <p class="footer-copy">&copy; {new Date().getFullYear()} Liam Powell</p>
-    </div>
+    <span class="section-label">Contact</span>
+
+    <p class="footer-lede">
+      The fastest way to reach me is email —
+      <a href="mailto:william.powell@unc.edu">william.powell@unc.edu</a>.
+    </p>
+
+    <p class="footer-links">
+      <a href="/resume.pdf">CV</a>
+      <span aria-hidden="true">·</span>
+      <a href="https://linkedin.com/in/williampwl" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+      <span aria-hidden="true">·</span>
+      <a href="https://github.com/liampwl" target="_blank" rel="noopener noreferrer">GitHub</a>
+      <span aria-hidden="true">·</span>
+      <a href="https://instagram.com/liam.pwl" target="_blank" rel="noopener noreferrer">Instagram</a>
+    </p>
+
+    <p class="footer-copy">&copy; {new Date().getFullYear()} Liam Powell · Chapel Hill / Hanoi</p>
   </div>
 </footer>
 
 <style>
   .footer {
-    border-top: 1px solid var(--color-border);
-    padding: 3rem 0;
+    padding: 4rem 0 3rem;
   }
 
-  .footer-inner {
+  .footer-lede {
+    font-family: var(--font-display);
+    font-size: var(--text-heading);
+    font-weight: 400;
+    line-height: var(--leading-snug);
+    max-width: 30ch;
+    margin-bottom: 1.5rem;
+  }
+
+  .footer-links {
+    font-size: var(--text-small);
+    color: var(--color-text-tertiary);
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    gap: 0.75rem;
     flex-wrap: wrap;
-    gap: 1rem;
+    margin-bottom: 3rem;
   }
 
   .footer-copy {
     font-size: var(--text-micro);
     color: var(--color-text-tertiary);
-  }
-
-  @media (max-width: 600px) {
-    .footer-inner {
-      flex-direction: column;
-      text-align: center;
-    }
   }
 </style>
