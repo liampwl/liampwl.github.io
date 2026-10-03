@@ -8,32 +8,32 @@ export interface ExperienceEntry {
 
 export const experience: ExperienceEntry[] = [
   {
+    organization: 'The Water Institute at UNC',
+    role: 'Graduate Work-Study Student, Communities of Practice',
+    dateRange: 'Sep 2025 — Present',
+    location: 'Chapel Hill, NC',
+    description: 'Coordinating webinar production for two global professional communities (1,000+ members across 50+ countries), from stakeholder outreach and communications campaigns to event logistics; increased average WASH in healthcare facilities webinar attendance by 50%. Helped launch the Circuit Riders Community of Practice, including washcircuitriders.org, a subscriber base grown from 0 to 297, and a bimonthly webinar series.',
+  },
+  {
     organization: 'Center for Research and Training on Substance Use-HIV, Hanoi Medical University',
     role: 'MPH Practicum Intern, Global Health',
     dateRange: 'Jun — Jul 2026',
     location: 'Hanoi, Vietnam',
-    description: 'Ran an interrupted time series analysis of longitudinal data from a Hanoi sexual health clinic to assess how the October 2025 PEPFAR funding terminations affected PrEP enrollment and client retention among MSM. Led qualitative interviews with clinic staff on changes to referral networks, outreach, and care-seeking, and reported findings to clinic leadership at CREATA-H.',
-  },
-  {
-    organization: 'The Water Institute at UNC',
-    role: 'Work-Study Student, Healthcare Facilities Team',
-    dateRange: 'Sep 2025 — May 2026',
-    location: 'Chapel Hill, NC',
-    description: 'Ran webinar production for two global Communities of Practice (1,000+ members across 50+ countries), raising WASH in healthcare facilities webinar attendance by roughly half. Built the Circuit Riders Community of Practice from scratch, including washcircuitriders.org and a subscriber base grown from 0 to nearly 300. Synthesized 2,000+ pages of program reports into a longitudinal database for World Vision\'s "Act to Save" evaluation in Niger.',
+    description: 'Designed and ran an interrupted time series analysis of seven years of clinic records, estimating ~750 person-years of PrEP coverage lost after the 2025 PEPFAR/CDC funding transition, with post-transition declines of 57% in service visits and 65% in new PrEP initiations. Built the R pipeline from raw REDCap exports and presented findings to clinic leadership and U.S. CDC staff in Hanoi.',
   },
   {
     organization: 'FHI 360',
     role: 'Stanback Fellow, Research & Knowledge Management — WASH',
     dateRange: 'May — Aug 2024',
     location: 'Durham, NC',
-    description: 'Produced technical resources and donor-facing materials for the Global Handwashing Partnership with partners including USAID, UNICEF, and the World Bank. Helped develop the Just Ask initiative, piloting AI-assisted microlearning tools to translate hygiene evidence into field-ready guidance.',
+    description: 'Developed resources for the Just Ask microlearning initiative and wrote a ChatGPT-assisted drafting procedure with citation verification and technical review steps. Developed Global Handwashing Day campaign materials and reviewed a hand-hygiene research summary for accurate interpretation of findings.',
   },
   {
     organization: 'USAID',
     role: 'Student Trainee, Bureau for Global Health — Office of HIV/AIDS',
     dateRange: 'May — Aug 2023',
     location: 'Washington, DC',
-    description: 'Conducted compliance reviews for $2M+ in HIV/AIDS subawards across 20+ country teams under PEPFAR. Coordinated technical inputs for Country Operational Plans and key population programming under global mechanisms like EpiC, and helped design the Office-wide orientation for incoming COP coordinators and medical officers.',
+    description: 'Conducted compliance reviews for $2M+ in HIV/AIDS subawards across 20+ country teams under PEPFAR. Coordinated technical inputs for Country Operational Plans and key population programming under EpiC, and helped design the Office-wide orientation for incoming COP coordinators and medical officers.',
   },
   {
     organization: 'Pathfinders for Greenways',
