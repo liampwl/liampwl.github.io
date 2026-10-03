@@ -1,0 +1,1141 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { experience } from '../data/experience';
+import maps from '../data/rally-maps.json';
+
+import '../styles/theme.css';
+import '../styles/global.css';
+
+// A Colin McRae Rally 2.0-style service area for the CV. Substance comes from
+// experience.ts; everything here is presentation (map pins, weather, banners).
+const byOrg = (prefix: string) => {
+  const e = experience.find((x) => x.organization.startsWith(prefix));
+  if (!e) throw new Error(`No experience entry for ${prefix}`);
+  return e;
+};
+
+const stages = [
+  {
+    short: 'Water Institute', banner: ['rally', 'carolina'], bannerColor: '#2f5f8a',
+    region: 'usEast', country: 'u', lat: 35.91, lon: -79.05,
+    weather: 'Cloudy', temp: 16, surfaces: 'Webinars, WordPress, Mailchimp',
+    ...byOrg('The Water Institute'),
+  },
+  {
+    short: 'Hanoi Medical Univ.', banner: ['rally', 'vietnam'], bannerColor: '#8a2f2a',
+    region: 'eastAsia', country: 'v', lat: 21.03, lon: 105.85,
+    weather: 'Rain', temp: 31, surfaces: 'R, REDCap, Stata',
+    ...byOrg('Center for Research'),
+    organization: 'CREATA-H, Hanoi Medical University',
+  },
+  {
+    short: 'FHI 360', banner: ['rally', 'durham'], bannerColor: '#3c6b3f',
+    region: 'usEast', country: 'u', lat: 35.99, lon: -78.9,
+    weather: 'Bright', temp: 26, surfaces: 'Microlearning, Campaigns',
+    ...byOrg('FHI 360'),
+  },
+  {
+    short: 'USAID', banner: ['rally', 'capital'], bannerColor: '#2b3a6b',
+    region: 'usEast', country: 'u', lat: 38.9, lon: -77.04,
+    weather: 'Bright', temp: 27, surfaces: 'Subawards, COPs',
+    ...byOrg('USAID'),
+  },
+  {
+    short: 'Pathfinders', banner: ['rally', 'blueridge'], bannerColor: '#5a4a2a',
+    region: 'usEast', country: 'u', lat: 37.27, lon: -79.94,
+    weather: 'Dry', temp: 13, surfaces: 'InDesign, Newsletters',
+    ...byOrg('Pathfinders'),
+  },
+  {
+    short: 'Duke Kunshan Univ.', banner: ['rally', 'china'], bannerColor: '#7a2a44',
+    region: 'eastAsia', country: 'c', lat: 31.39, lon: 120.98,
+    weather: 'Drizzle', temp: 16, surfaces: 'Python, BERTopic, Mandarin',
+    organization: 'Duke Kunshan University',
+    role: 'B.S. Global Health & Public Policy (with a B.A. from Duke)',
+    dateRange: '2021 — 2025',
+    location: 'Kunshan, China',
+    description: 'Three years living and studying in China. Signature Work thesis used BERTopic topic modeling on 2,300+ USAID documents, finding disease-specific bilateral programming dominant under Trump and multilateral engagement and reproductive health expanding under Biden.',
+  },
+];
+
+// `used` holds indexes into stages; `last` is mm:yy, 'now' for ongoing, or null
+const skills = [
+  { name: 'R', icon: 'its', used: [1], last: '07:26', desc: 'Wrote the Hanoi analysis pipeline in R from raw REDCap exports: an interrupted time series over seven years of clinic records.' },
+  { name: 'Stata', icon: 'bars', used: [1], last: '07:26', desc: "Reconstructed the Hanoi clinic's existing Stata reporting definitions so the new pipeline matched what the clinic already reported." },
+  { name: 'REDCap', icon: 'db', used: [1], last: '07:26', desc: "Worked from raw REDCap exports of the clinic database, and wrote the database's first data dictionary." },
+  { name: 'Python', icon: 'code', used: [5], last: '04:25', desc: 'Topic modeling for the Duke Kunshan thesis, and the Flask back end for CliniCrush, which won HackDKU 2025.' },
+  { name: 'BERTopic', icon: 'topics', used: [5], last: '03:25', desc: 'Topic modeling across 2,300+ USAID policy and program documents to compare priorities across administrations.' },
+  { name: 'Webinars', icon: 'screen', used: [0], last: 'now', desc: 'Production for two global Communities of Practice with 1,000+ members across 50+ countries. Average attendance up 50%.' },
+  { name: 'InDesign', icon: 'page', used: [4], last: 'now', desc: 'Donor newsletters for Pathfinders for Greenways, 4,000+ a year.' },
+  { name: 'Mandarin', icon: 'lang', used: [5], last: null, desc: 'Intermediate. Three years living and studying in Kunshan.' },
+];
+---
+
+<BaseLayout
+  title="Liam Powell — Rally Mode"
+  description="Career mode. Same résumé, different interface."
+>
+  <Fragment slot="head">
+    <meta name="robots" content="noindex" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=Michroma&display=swap"
+      rel="stylesheet"
+    />
+  </Fragment>
+
+  <div class="cmr-frame">
+    <div class="cmr" id="cmr" role="application" aria-label="Rally mode CV">
+      <!-- Main menu -->
+      <section class="scr scr-menu" data-screen="menu">
+        <div class="menu-title">Main Menu</div>
+        <div class="menu-time">Time <span id="menu-clock"></span></div>
+        <svg class="menu-track" id="menu-track" viewBox="0 0 640 480" aria-hidden="true"></svg>
+        <div class="menu-row-wrap"><div class="menu-row" id="menu-row"></div></div>
+        <div class="menu-hint">Use the cursor keys to make your selection, press return to confirm.</div>
+        <div class="menu-build">LPRALLY2 Build 1 (Oct 3 2026)</div>
+      </section>
+
+      <!-- Service area: Information / Set Up -->
+      <section class="scr scr-service" data-screen="service" hidden>
+        <nav class="tabs" aria-label="Service area">
+          <button data-tab="info">Information</button>
+          <button data-tab="setup">Set Up</button>
+          <a href="/resume.pdf">Race</a>
+          <button data-tab="quit">Quit</button>
+        </nav>
+        <div class="player">Player 1 <span>liam</span></div>
+
+        <div class="pane" data-pane="info">
+          <svg class="map" id="map" width="260" height="208" aria-hidden="true"></svg>
+          <div class="weather" id="weather"></div>
+          <div class="temp"><div class="temp-bar"></div><span id="temp-label"></span></div>
+          <div class="info-desc">
+            <p class="info-role" id="info-role"></p>
+            <p id="info-desc"></p>
+          </div>
+
+          <div class="col">
+            <canvas class="banner" id="banner" width="96" height="22"></canvas>
+            <div class="day" id="day"></div>
+            <div class="facts" id="facts"></div>
+            <ol class="list" id="stage-list"></ol>
+          </div>
+        </div>
+
+        <div class="pane" data-pane="setup" hidden>
+          <div class="car-wrap">
+            <canvas class="car" id="car" width="128" height="48" hidden></canvas>
+            <canvas class="car3d" id="car3d" width="340" height="150" aria-label="Rotating model of a Volkswagen Tiguan; drag to spin"></canvas>
+            <svg class="car-lines" width="360" height="166" viewBox="0 0 360 166" aria-hidden="true">
+              <path id="car-line-path" stroke="#f2f4ee" stroke-width="1" fill="none" d="" />
+              <circle id="hub-a" r="3" fill="#f2f4ee" cx="-10" cy="-10" />
+              <circle id="hub-b" r="3" fill="#f2f4ee" cx="-10" cy="-10" />
+            </svg>
+          </div>
+          <div class="part-panel"><canvas id="part-icon" width="48" height="48"></canvas></div>
+          <div class="last-label">Last Used (mm:yy)</div>
+          <div class="last-panel" id="last-used"></div>
+          <div class="usebar" id="usebar"></div>
+          <div class="usebar-labels"><span>SS01</span><span>Used on stage</span><span>SS06</span></div>
+          <p class="setup-desc" id="setup-desc"></p>
+
+          <div class="col">
+            <div class="tr-title">Time Remaining</div>
+            <div class="tr-sub">MPH time allocation</div>
+            <div class="tr-big"><span id="time-left"></span> <small>(mo:dd)</small></div>
+            <div class="driver">
+              <strong>Liam Powell</strong>
+              <span>Base: Chapel Hill, NC</span>
+              <span>Class: MPH 2027</span>
+              <span>Car: VW Tiguan</span>
+            </div>
+            <ol class="list" id="skill-list"></ol>
+          </div>
+        </div>
+
+        <div class="foot">
+          <span><i>↵</i> Select <i>Esc</i> Back</span>
+          <span><i>Q</i><i>E</i> Change tab</span>
+        </div>
+      </section>
+    </div>
+    <p class="rotate-hint">Best in landscape. It's 4:3, like God intended.</p>
+  </div>
+
+  <script>
+    let started = false;
+    document.addEventListener('rally:setup', async () => {
+      if (started) return;
+      started = true;
+      try {
+        const { mountCar } = await import('../scripts/rally-car');
+        await mountCar(
+          document.getElementById('car3d') as HTMLCanvasElement,
+          document.getElementById('car-line-path') as unknown as SVGPathElement,
+          [
+            document.getElementById('hub-a') as unknown as SVGCircleElement,
+            document.getElementById('hub-b') as unknown as SVGCircleElement,
+          ],
+          { barY: 150, stemX: 98, stemY: 166 },
+        );
+      } catch (err) {
+        console.warn('Rally car fell back to 2D:', err);
+        document.dispatchEvent(new CustomEvent('rally:car-fallback'));
+      }
+    });
+  </script>
+
+  <noscript><p style="padding:2rem">Rally mode needs JavaScript. <a href="/">Back to the normal site</a>.</p></noscript>
+
+  <script is:inline define:vars={{ stages, skills, maps }}>
+    (function () {
+      const $ = (s) => document.querySelector(s);
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      /* ---------- scale the 640x480 screen into the window ---------- */
+      const cmr = $('#cmr');
+      function fit() {
+        const s = Math.min(window.innerWidth / 640, window.innerHeight / 480);
+        cmr.style.transform = `scale(${s})`;
+        cmr.parentElement.style.setProperty('--h', `${480 * s}px`);
+      }
+      window.addEventListener('resize', fit);
+      fit();
+
+      /* ---------- low-res rasterizer: draw small, display big ---------- */
+      function raster(canvas, svg) {
+        const img = new Image();
+        img.onload = () => {
+          const ctx = canvas.getContext('2d');
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        };
+        img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+      }
+      function iconCanvas(w, h, svg, cls) {
+        const c = document.createElement('canvas');
+        c.width = w; c.height = h;
+        if (cls) c.className = cls;
+        raster(c, svg);
+        return c;
+      }
+
+      const INK = '#2a2e2f';
+      const wrap = (vb, body) => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${vb}">${body}</svg>`;
+
+      const cloud = (fill, dy = 0) => `<path transform="translate(0 ${dy})" d="M6.5 18h11a4 4 0 0 0 .4-8 5.5 5.5 0 0 0-10.6-1.2A4.6 4.6 0 0 0 6.5 18z" fill="${fill}" stroke="${INK}" stroke-width="1.4"/>`;
+      const sun = (cx, cy, r) => {
+        let rays = '';
+        for (let i = 0; i < 8; i++) {
+          const a = (i * Math.PI) / 4, r1 = r + 1.6, r2 = r + 3.6;
+          rays += `<line x1="${cx + r1 * Math.cos(a)}" y1="${cy + r1 * Math.sin(a)}" x2="${cx + r2 * Math.cos(a)}" y2="${cy + r2 * Math.sin(a)}"/>`;
+        }
+        return `<g stroke="${INK}" stroke-width="1.3"><circle cx="${cx}" cy="${cy}" r="${r}" fill="#f2d84a"/>${rays}</g>`;
+      };
+      const WEATHER = {
+        Bright: wrap('0 0 24 24', sun(12, 12, 4.5)),
+        Dry: wrap('0 0 24 24', sun(16, 8, 3.2) + cloud('#fbfbf6', 2)),
+        Cloudy: wrap('0 0 24 24', cloud('#fbfbf6', 0)),
+        Drizzle: wrap('0 0 24 24', cloud('#fbfbf6', -3) + `<g stroke="${INK}" stroke-width="1.3"><line x1="8" y1="18" x2="7" y2="20"/><line x1="12" y1="18" x2="11" y2="20"/><line x1="16" y1="18" x2="15" y2="20"/></g>`),
+        Rain: wrap('0 0 24 24', cloud('#e4e8e6', -4) + `<g stroke="${INK}" stroke-width="1.3"><line x1="7" y1="16" x2="5.5" y2="21"/><line x1="11" y1="16" x2="9.5" y2="21"/><line x1="15" y1="16" x2="13.5" y2="21"/><line x1="19" y1="16" x2="17.5" y2="20"/></g>`),
+        Storm: wrap('0 0 24 24', cloud('#c9cfcf', -4) + `<path d="M13 14l-3 5h3l-2 4 5-6h-3l2-3z" fill="#f2d84a" stroke="${INK}" stroke-width="1"/>`),
+      };
+
+      const L = `fill="none" stroke="#1f2222" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"`;
+      const PARTS = {
+        its: wrap('0 0 96 96', `<g ${L}><path d="M14 14V82H86"/><path d="M20 62L28 56 36 58 44 46 50 42"/><path d="M56 70L64 66 72 70 80 64"/><path stroke-dasharray="4 5" d="M53 20V80"/></g><g fill="#1f2222"><circle cx="28" cy="56" r="3"/><circle cx="44" cy="46" r="3"/><circle cx="64" cy="66" r="3"/><circle cx="80" cy="64" r="3"/></g>`),
+        bars: wrap('0 0 96 96', `<g ${L}><path d="M14 14V82H86"/><rect x="24" y="52" width="10" height="30"/><rect x="42" y="36" width="10" height="46"/><rect x="60" y="44" width="10" height="38"/><path d="M22 34L44 22 62 30 82 16"/></g>`),
+        db: wrap('0 0 96 96', `<g ${L}><ellipse cx="48" cy="22" rx="28" ry="9"/><path d="M20 22V74c0 5 13 9 28 9s28-4 28-9V22"/><path d="M20 39c0 5 13 9 28 9s28-4 28-9M20 56c0 5 13 9 28 9s28-4 28-9"/></g>`),
+        code: wrap('0 0 96 96', `<g ${L}><rect x="12" y="18" width="72" height="58" rx="4"/><path d="M12 30H84"/><path d="M24 44l10 8-10 8M42 62H60"/></g>`),
+        topics: wrap('0 0 96 96', `<g ${L}><circle cx="34" cy="36" r="18"/><circle cx="64" cy="40" r="16"/><circle cx="46" cy="66" r="16"/></g><g fill="#1f2222"><circle cx="30" cy="32" r="3"/><circle cx="38" cy="40" r="3"/><circle cx="62" cy="36" r="3"/><circle cx="68" cy="44" r="3"/><circle cx="44" cy="64" r="3"/><circle cx="50" cy="70" r="3"/></g>`),
+        screen: wrap('0 0 96 96', `<g ${L}><rect x="12" y="16" width="72" height="48" rx="3"/><path d="M38 78H58M48 64V78"/><circle cx="34" cy="36" r="6"/><circle cx="62" cy="36" r="6"/><path d="M24 54c2-6 6-8 10-8s8 2 10 8M52 54c2-6 6-8 10-8s8 2 10 8"/></g>`),
+        page: wrap('0 0 96 96', `<g ${L}><path d="M22 10H60L76 26V86H22Z"/><path d="M60 10V26H76"/><path d="M32 40H66M32 52H66M32 64H52"/><rect x="32" y="28" width="16" height="6"/></g>`),
+        lang: wrap('0 0 96 96', `<text x="48" y="62" text-anchor="middle" font-size="40" font-family="'PingFang SC','Noto Sans CJK SC','Microsoft YaHei',sans-serif" fill="#1f2222">中文</text>`),
+      };
+
+      const CHEVRON = wrap('0 0 10 10', `<rect x="0.5" y="0.5" width="9" height="9" fill="#c9cfcf" stroke="${INK}"/><path d="M3.5 2.5l3 2.5-3 2.5" fill="none" stroke="${INK}" stroke-width="1.4"/>`);
+      const BOX = (checked) => wrap('0 0 10 10', `<rect x="0.5" y="0.5" width="9" height="9" fill="none" stroke="#f2f4ee"/>${checked ? `<path d="M2 5l2.2 2.4L8.4 2.6" fill="none" stroke="#f2f4ee" stroke-width="1.4"/>` : ''}`);
+
+      const CAR = wrap('0 0 128 48', `
+        <path d="M10 15l12-1 0 3-11 2z" fill="#1f2a5a" stroke="${INK}" stroke-width=".8"/>
+        <path d="M8 36V22l6-4 18-2 12-9h38l12 9 22 3c5 1 7 4 7 8v9z" fill="#f4f4ef" stroke="${INK}" stroke-width="1"/>
+        <path d="M8 30h115v6H8z" fill="#1f3f8f"/>
+        <path d="M30 27c20-3 40 4 60-2s20-1 33 1v4H30z" fill="#e8c934"/>
+        <path d="M36 16l10-8h16v8z M66 16V8h15l10 8z" fill="#2c3846" stroke="${INK}" stroke-width=".8"/>
+        <rect x="68" y="19" width="11" height="8" fill="#fff" stroke="${INK}" stroke-width=".6"/>
+        <text x="73.5" y="25.6" text-anchor="middle" font-size="7" font-family="Arial,sans-serif" font-weight="700" fill="#111">27</text>
+        <path d="M63 17v19" stroke="${INK}" stroke-width=".6"/>
+        <g><circle cx="30" cy="37" r="9.5" fill="#1b1d1e"/><circle cx="30" cy="37" r="5.5" fill="#c8b98a"/><circle cx="30" cy="37" r="1.8" fill="#555"/></g>
+        <g><circle cx="100" cy="37" r="9.5" fill="#1b1d1e"/><circle cx="100" cy="37" r="5.5" fill="#c8b98a"/><circle cx="100" cy="37" r="1.8" fill="#555"/></g>
+        <text x="46" y="35" font-size="4" font-family="Arial,sans-serif" font-weight="700" fill="#fff">L.POWELL</text>
+      `);
+
+      /* ---------- seven-segment readouts with ghost segments ---------- */
+      const SEG = { 0: 'abcdef', 1: 'bc', 2: 'abged', 3: 'abgcd', 4: 'fgbc', 5: 'afgcd', 6: 'afgedc', 7: 'abc', 8: 'abcdefg', 9: 'abcdfg', '-': 'g' };
+      function lcd(text, h, on, off) {
+        const t = h * 0.13, w = h * 0.52, gap = h * 0.14;
+        let x = 0, out = '';
+        const r = (rx, ry, rw, rh, f) => (out += `<rect x="${rx.toFixed(2)}" y="${ry.toFixed(2)}" width="${rw.toFixed(2)}" height="${rh.toFixed(2)}" fill="${f}"/>`);
+        for (const ch of text) {
+          if (ch === ':') { r(x, h * 0.28, t, t, on); r(x, h * 0.64, t, t, on); x += t + gap; continue; }
+          if (ch === '.') { r(x, h - t, t, t, on); x += t + gap; continue; }
+          const lit = SEG[ch] || '';
+          const segs = {
+            a: [x + t, 0, w - 2 * t, t], b: [x + w - t, t, t, h / 2 - 1.5 * t], c: [x + w - t, h / 2 + t / 2, t, h / 2 - 1.5 * t],
+            d: [x + t, h - t, w - 2 * t, t], e: [x, h / 2 + t / 2, t, h / 2 - 1.5 * t], f: [x, t, t, h / 2 - 1.5 * t], g: [x + t, h / 2 - t / 2, w - 2 * t, t],
+          };
+          for (const k in segs) r(...segs[k], lit.includes(k) ? on : off);
+          x += w + gap;
+        }
+        return `<svg width="${x - gap}" height="${h}" viewBox="0 0 ${x - gap} ${h}" aria-hidden="true">${out}</svg>`;
+      }
+
+      /* ---------- screens ---------- */
+      let screen = 'menu';
+      function show(name) {
+        screen = name;
+        document.querySelectorAll('.scr').forEach((s) => (s.hidden = s.dataset.screen !== name));
+      }
+
+      /* ---------- main menu ---------- */
+      const MENU = [
+        { label: 'stages', go: () => { show('service'); tab('info'); } },
+        { label: 'set up', go: () => { show('service'); tab('setup'); } },
+        { label: 'cv', go: () => (location.href = '/resume.pdf') },
+        { label: 'email', go: () => (location.href = 'mailto:william.powell@unc.edu') },
+        { label: 'network', go: () => window.open('https://linkedin.com/in/williampwl', '_blank', 'noopener') },
+        { label: 'quit', go: () => (location.href = '/') },
+      ];
+      let menuIdx = 0;
+      const row = $('#menu-row');
+      for (let copy = 0; copy < 3; copy++) {
+        MENU.forEach((m, i) => {
+          const b = document.createElement('button');
+          b.textContent = m.label;
+          b.dataset.i = i;
+          if (copy !== 1) { b.tabIndex = -1; b.setAttribute('aria-hidden', 'true'); }
+          b.addEventListener('click', () => (menuIdx === i ? m.go() : menuSelect(i)));
+          row.appendChild(b);
+        });
+      }
+      function menuSelect(i) {
+        menuIdx = (i + MENU.length) % MENU.length;
+        const btns = Array.from(row.children);
+        btns.forEach((b) => b.classList.toggle('on', +b.dataset.i === menuIdx));
+        const target = btns[MENU.length + menuIdx];
+        row.style.transform = `translateX(${150 - target.offsetLeft}px)`;
+      }
+      document.fonts.ready.then(() => menuSelect(menuIdx));
+      menuSelect(0);
+
+      // Name lettered along a stage, like the original's attract screen
+      const track = $('#menu-track');
+      const NS = 'http://www.w3.org/2000/svg';
+      const path = document.createElementNS(NS, 'path');
+      path.setAttribute('d', 'M492 96 C522 92 524 100 498 104 C440 110 360 120 362 130 C366 138 430 140 470 141 C520 142 548 158 520 166 C400 182 200 172 82 190 C60 194 70 200 96 204 C150 210 160 220 146 232 C132 248 170 258 260 266 C360 274 470 262 576 250');
+      path.setAttribute('fill', 'none');
+      track.appendChild(path);
+      const len = path.getTotalLength();
+      const word = 'liampowell';
+      let k = 0;
+      for (let d = 0; d < len; d += 6.4) {
+        const p = path.getPointAtLength(d);
+        const size = 4.5 + Math.max(0, (p.y - 90) / 180) * 7;
+        const t = document.createElementNS(NS, 'text');
+        t.setAttribute('x', p.x.toFixed(1));
+        t.setAttribute('y', p.y.toFixed(1));
+        t.setAttribute('font-size', size.toFixed(1));
+        t.textContent = word[k++ % word.length];
+        track.appendChild(t);
+      }
+      const dot = document.createElementNS(NS, 'ellipse');
+      dot.setAttribute('rx', '5'); dot.setAttribute('ry', '3.5'); dot.setAttribute('fill', '#fff');
+      track.appendChild(dot);
+
+      const clock = $('#menu-clock');
+      const t0 = performance.now();
+      function frame(now) {
+        const ms = now - t0;
+        const mm = String(Math.floor(ms / 60000) % 100).padStart(2, '0');
+        const ss = String(Math.floor(ms / 1000) % 60).padStart(2, '0');
+        const cs = String(Math.floor(ms / 10) % 100).padStart(2, '0');
+        if (screen === 'menu') {
+          clock.innerHTML = lcd(`${mm}:${ss}.${cs}`, 14, '#d9ecd9', 'rgba(217,236,217,0.14)');
+          const p = path.getPointAtLength(reduceMotion ? len * 0.62 : ((ms / 14000) % 1) * len);
+          dot.setAttribute('cx', p.x); dot.setAttribute('cy', p.y);
+        }
+        requestAnimationFrame(frame);
+      }
+      requestAnimationFrame(frame);
+
+      /* ---------- service area ---------- */
+      let currentTab = 'info';
+      function tab(name) {
+        if (name === 'quit') { show('menu'); return; }
+        currentTab = name;
+        if (name === 'setup') document.dispatchEvent(new CustomEvent('rally:setup'));
+        document.querySelectorAll('.tabs [data-tab]').forEach((b) => b.classList.toggle('on', b.dataset.tab === name));
+        document.querySelectorAll('.pane').forEach((p) => (p.hidden = p.dataset.pane !== name));
+      }
+      document.querySelectorAll('.tabs [data-tab]').forEach((b) => b.addEventListener('click', () => tab(b.dataset.tab)));
+
+      function listRow(label, extra) {
+        const li = document.createElement('li');
+        const b = document.createElement('button');
+        b.appendChild(iconCanvas(10, 10, CHEVRON, 'chev'));
+        const s = document.createElement('span');
+        s.textContent = label;
+        b.appendChild(s);
+        if (extra) b.appendChild(extra);
+        li.appendChild(b);
+        return { li, b };
+      }
+
+      // Information: map, weather, stage list
+      const COLORS = { ocean: '#5d7f96', land: '#7894a5', home: '#b8dcc1' };
+      function drawMap(st) {
+        const m = maps[st.region];
+        const cw = 260 / m.cols, ch = 208 / m.rows.length;
+        let out = `<rect width="260" height="208" fill="${COLORS.ocean}"/>`;
+        m.rows.forEach((r, y) => {
+          let x = 0;
+          while (x < r.length) {
+            const c = r[x];
+            let e = x;
+            while (e < r.length && r[e] === c) e++;
+            if (c !== '.') {
+              const fill = c === st.country ? COLORS.home : COLORS.land;
+              out += `<rect x="${(x * cw).toFixed(2)}" y="${(y * ch).toFixed(2)}" width="${((e - x) * cw + 0.3).toFixed(2)}" height="${(ch + 0.3).toFixed(2)}" fill="${fill}"/>`;
+            }
+            x = e;
+          }
+        });
+        const pos = (s) => [((s.lon - m.lon[0]) / (m.lon[1] - m.lon[0])) * 260, ((m.lat[1] - s.lat) / (m.lat[1] - m.lat[0])) * 208];
+        stages.forEach((s) => {
+          if (s.region !== st.region || s === st) return;
+          const [x, y] = pos(s);
+          out += `<rect x="${x - 4}" y="${y - 4}" width="8" height="8" fill="none" stroke="#f3efa0" stroke-width="1"/>`;
+        });
+        const [x, y] = pos(st);
+        out += `<rect x="${x - 5}" y="${y - 5}" width="10" height="10" fill="#f3efa0" stroke="${INK}" stroke-width="1"/>`;
+        $('#map').innerHTML = out;
+      }
+
+      const weatherEl = $('#weather');
+      const weatherCells = {};
+      Object.entries(WEATHER).forEach(([name, svg]) => {
+        const d = document.createElement('div');
+        d.className = 'wx';
+        d.appendChild(iconCanvas(20, 20, svg));
+        const s = document.createElement('span');
+        s.textContent = name;
+        d.appendChild(s);
+        weatherEl.appendChild(d);
+        weatherCells[name] = d;
+      });
+
+      function drawBanner(st) {
+        const c = $('#banner'), ctx = c.getContext('2d');
+        ctx.fillStyle = st.bannerColor;
+        ctx.fillRect(0, 0, 96, 22);
+        // dithered noise, like a compressed texture
+        for (let i = 0; i < 260; i++) {
+          ctx.fillStyle = Math.random() > 0.5 ? 'rgba(255,255,255,0.10)' : 'rgba(0,0,0,0.16)';
+          ctx.fillRect(Math.floor(Math.random() * 96), Math.floor(Math.random() * 22), 1, 1);
+        }
+        ctx.fillStyle = '#fff';
+        ctx.font = 'italic 10px Arial, sans-serif';
+        ctx.fillText(st.banner[0], 5, 14);
+        const w = ctx.measureText(st.banner[0]).width;
+        ctx.font = 'bold italic 11px Arial, sans-serif';
+        ctx.fillText(st.banner[1], 5 + w, 14);
+        ctx.fillStyle = '#f3efa0';
+        ctx.fillRect(5, 17, 34, 1);
+      }
+
+      let stageIdx = 0;
+      const stageButtons = [];
+      stages.forEach((st, i) => {
+        const { li, b } = listRow(`SS0${i + 1}  ${st.short}`);
+        b.addEventListener('click', () => selectStage(i));
+        stageButtons.push(b);
+        $('#stage-list').appendChild(li);
+      });
+
+      function selectStage(i) {
+        stageIdx = (i + stages.length) % stages.length;
+        const st = stages[stageIdx];
+        stageButtons.forEach((b, j) => b.classList.toggle('on', j === stageIdx));
+        drawMap(st);
+        drawBanner(st);
+        Object.entries(weatherCells).forEach(([n, el]) => el.classList.toggle('on', n === st.weather));
+        $('#temp-label').textContent = `${st.temp}°c`;
+        $('#temp-label').style.left = `${Math.min(92, Math.max(8, (st.temp / 40) * 100))}%`;
+        const year = st.dateRange.match(/(\d{4})(?!.*\d{4})/);
+        $('#day').innerHTML = `${/Present/.test(st.dateRange) ? new Date().getFullYear() : year ? year[1] : ''} <span>Stage ${stageIdx + 1} of ${stages.length}</span>`;
+        $('#facts').innerHTML = '';
+        [['Location', st.location], ['Dates', st.dateRange.replace(/\s—\s/, '–')], ['Surfaces', st.surfaces]].forEach(([k, v]) => {
+          const d = document.createElement('div');
+          d.textContent = `${k}: ${v}`;
+          $('#facts').appendChild(d);
+        });
+        $('#info-role').textContent = `${st.role} — ${st.organization}`;
+        $('#info-desc').textContent = st.description;
+      }
+
+      // Set Up: skills as car parts
+      // The 3D car loads on first visit to Set Up; the pixel car is the fallback
+      document.addEventListener('rally:car-fallback', () => {
+        $('#car3d').hidden = true;
+        $('#car').hidden = false;
+        raster($('#car'), CAR);
+        $('#car-line-path').setAttribute('d', 'M70 86 V130 M234 86 V130 M70 130 H234 M98 130 V166');
+        ['#hub-a', '#hub-b'].forEach((id, i) => { $(id).setAttribute('cx', i ? 234 : 70); $(id).setAttribute('cy', 86); });
+      });
+      const now = new Date();
+      const nowMMYY = `${String(now.getMonth() + 1).padStart(2, '0')}:${String(now.getFullYear()).slice(2)}`;
+      const grad = new Date(2027, 4, 8);
+      let mo = (grad.getFullYear() - now.getFullYear()) * 12 + grad.getMonth() - now.getMonth();
+      let dd = grad.getDate() - now.getDate();
+      if (dd < 0) { mo -= 1; dd += new Date(grad.getFullYear(), grad.getMonth(), 0).getDate(); }
+      $('#time-left').textContent = mo < 0 ? '00:00' : `${String(mo).padStart(2, '0')}:${String(dd).padStart(2, '0')}`;
+
+      const visited = new Set();
+      let skillIdx = 0;
+      const skillRows = [];
+      skills.forEach((sk, i) => {
+        const box = iconCanvas(10, 10, BOX(false), 'box');
+        const { li, b } = listRow(sk.name, box);
+        b.addEventListener('click', () => selectSkill(i));
+        skillRows.push({ b, box });
+        $('#skill-list').appendChild(li);
+      });
+
+      for (let i = 0; i < stages.length; i++) {
+        const seg = document.createElement('div');
+        $('#usebar').appendChild(seg);
+      }
+
+      function selectSkill(i) {
+        skillIdx = (i + skills.length) % skills.length;
+        const sk = skills[skillIdx];
+        visited.add(skillIdx);
+        skillRows.forEach((r, j) => {
+          r.b.classList.toggle('on', j === skillIdx);
+          raster(r.box, BOX(visited.has(j)));
+        });
+        raster($('#part-icon'), PARTS[sk.icon]);
+        const last = sk.last === 'now' ? nowMMYY : sk.last ?? '--:--';
+        $('#last-used').textContent = last;
+        Array.from($('#usebar').children).forEach((s, j) => s.classList.toggle('lit', sk.used.includes(j)));
+        $('#setup-desc').textContent = sk.desc;
+      }
+
+      selectStage(0);
+      selectSkill(0);
+      tab('info');
+
+      /* ---------- keyboard ---------- */
+      document.addEventListener('keydown', (e) => {
+        const k = e.key;
+        if (screen === 'menu') {
+          if (k === 'ArrowRight' || k === 'ArrowDown') { e.preventDefault(); menuSelect(menuIdx + 1); }
+          else if (k === 'ArrowLeft' || k === 'ArrowUp') { e.preventDefault(); menuSelect(menuIdx - 1); }
+          else if (k === 'Enter') { e.preventDefault(); MENU[menuIdx].go(); }
+          else if (k === 'Escape') { location.href = '/'; }
+          return;
+        }
+        if (k === 'Escape') { show('menu'); return; }
+        if (k === 'q' || k === 'e' || k === 'Q' || k === 'E') { tab(currentTab === 'info' ? 'setup' : 'info'); return; }
+        const step = k === 'ArrowDown' ? 1 : k === 'ArrowUp' ? -1 : 0;
+        if (!step) return;
+        e.preventDefault();
+        if (currentTab === 'info') selectStage(stageIdx + step);
+        else selectSkill(skillIdx + step);
+      });
+    })();
+  </script>
+</BaseLayout>
+
+<style is:global>
+  body:has(.cmr) {
+    background: #000;
+    overflow: hidden;
+  }
+
+  .cmr-frame {
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .cmr {
+    --bg: #8d9695;
+    --ink: #2a2e2f;
+    --light: #f2f4ee;
+    --rule: rgba(242, 244, 238, 0.8);
+    position: relative;
+    flex: none;
+    width: 640px;
+    height: 480px;
+    margin-bottom: calc(var(--h, 480px) - 480px);
+    transform-origin: top center;
+    overflow: hidden;
+    font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif;
+    font-stretch: 88%;
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    user-select: none;
+  }
+
+  .cmr button {
+    font: inherit;
+    color: inherit;
+    background: none;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    text-align: left;
+  }
+
+  .cmr canvas {
+    image-rendering: pixelated;
+  }
+
+  .cmr .scr {
+    position: absolute;
+    inset: 0;
+  }
+
+  .cmr .scr[hidden],
+  .cmr .pane[hidden] {
+    display: none;
+  }
+
+  /* ---------- main menu ---------- */
+  .scr-menu {
+    background: #9bb1a8;
+    color: #d6e9d5;
+  }
+
+  .menu-title {
+    position: absolute;
+    left: 30px;
+    top: 26px;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: -0.03em;
+    color: #fff;
+  }
+
+  .menu-time {
+    position: absolute;
+    right: 34px;
+    top: 26px;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: -0.03em;
+    color: #e7f3e6;
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+
+  .menu-track {
+    position: absolute;
+    inset: 0;
+    width: 640px;
+    height: 480px;
+  }
+
+  .menu-track text {
+    fill: rgba(222, 238, 224, 0.75);
+    font-family: Arial, sans-serif;
+    text-anchor: middle;
+  }
+
+  .menu-row-wrap {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 320px;
+    height: 40px;
+    overflow: hidden;
+  }
+
+  .menu-row {
+    display: flex;
+    white-space: nowrap;
+    transition: transform 0.18s ease-out;
+  }
+
+  .menu-row button {
+    font-size: 30px;
+    font-weight: 400;
+    font-stretch: 100%;
+    letter-spacing: -0.06em;
+    line-height: 38px;
+    padding: 0 12px 0 10px;
+    border-right: 1px solid rgba(255, 255, 255, 0.85);
+    color: #d6e9d5;
+  }
+
+  .menu-row button.on {
+    color: #fff;
+  }
+
+  .menu-hint {
+    position: absolute;
+    left: 100px;
+    top: 372px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: #d6e9d5;
+  }
+
+  .menu-build {
+    position: absolute;
+    left: 6px;
+    bottom: 6px;
+    font-size: 8px;
+    letter-spacing: -0.03em;
+    color: #eef6ee;
+  }
+
+  /* ---------- service area ---------- */
+  .scr-service {
+    background: var(--bg);
+  }
+
+  .tabs {
+    position: absolute;
+    left: 26px;
+    top: 26px;
+    display: flex;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: -0.02em;
+  }
+
+  .cmr .tabs > * {
+    padding: 0 6px;
+    border-right: 1px solid var(--ink);
+    color: #3a3f40;
+    text-decoration: none;
+    line-height: 16px;
+    font-size: 14px;
+  }
+
+  .cmr .tabs > :first-child {
+    padding-left: 0;
+  }
+
+  .tabs > :last-child {
+    border-right: 0;
+  }
+
+  .tabs > :hover,
+  .tabs .on {
+    color: var(--light);
+  }
+
+  .player {
+    position: absolute;
+    left: 452px;
+    top: 26px;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: -0.02em;
+    line-height: 16px;
+  }
+
+  .player span {
+    border-left: 1px solid var(--ink);
+    padding-left: 5px;
+    margin-left: 3px;
+  }
+
+  .col {
+    position: absolute;
+    left: 452px;
+    top: 66px;
+    width: 160px;
+  }
+
+  .list {
+    list-style: none;
+    border-top: 2px solid var(--rule);
+  }
+
+  .list li {
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .list button {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    height: 19px;
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: -0.02em;
+    white-space: pre;
+  }
+
+  .list button span {
+    flex: 1;
+  }
+
+  .list button.on,
+  .list button:hover {
+    color: var(--light);
+  }
+
+  .list .chev {
+    width: 11px;
+    height: 11px;
+    flex: none;
+  }
+
+  .list .box {
+    width: 12px;
+    height: 12px;
+    flex: none;
+  }
+
+  .foot {
+    position: absolute;
+    left: 26px;
+    right: 28px;
+    bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 10px;
+    font-weight: 700;
+    color: #3d4344;
+  }
+
+  .foot i {
+    font-style: normal;
+    display: inline-block;
+    min-width: 14px;
+    height: 14px;
+    line-height: 14px;
+    padding: 0 3px;
+    margin: 0 3px 0 6px;
+    border-radius: 7px;
+    background: #3d4344;
+    color: var(--bg);
+    text-align: center;
+    font-size: 8px;
+  }
+
+  .foot i + i {
+    margin-left: 0;
+  }
+
+  /* Information */
+  .map {
+    position: absolute;
+    left: 28px;
+    top: 66px;
+    shape-rendering: crispEdges;
+  }
+
+  .weather {
+    position: absolute;
+    left: 296px;
+    top: 64px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .wx {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 46px;
+    font-size: 9.5px;
+    line-height: 11px;
+    font-weight: 600;
+    color: #f2f4ee;
+    opacity: 0.55;
+  }
+
+  .wx canvas {
+    width: 22px;
+    height: 22px;
+  }
+
+  .wx.on {
+    opacity: 1;
+  }
+
+  .wx.on span {
+    background: var(--ink);
+    padding: 0 3px;
+  }
+
+  .temp {
+    position: absolute;
+    left: 28px;
+    top: 280px;
+    width: 260px;
+    height: 11px;
+  }
+
+  .temp-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #a5c6d4 0%, #cfe0d0 30%, #ece49c 55%, #eeb257 80%, #e8893d 100%);
+  }
+
+  .temp span {
+    position: absolute;
+    top: -1px;
+    transform: translateX(-50%);
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 13px;
+  }
+
+  .info-desc {
+    position: absolute;
+    left: 28px;
+    top: 304px;
+    width: 400px;
+    font-size: 11px;
+    line-height: 13.5px;
+    letter-spacing: -0.01em;
+    font-weight: 500;
+  }
+
+  .info-role {
+    font-weight: 700;
+    color: var(--light);
+    margin-bottom: 4px;
+  }
+
+  .banner {
+    display: block;
+    width: 160px;
+    height: 36px;
+    border: 1px solid rgba(0, 0, 0, 0.35);
+    margin-bottom: 12px;
+  }
+
+  .day {
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: -0.02em;
+    margin-bottom: 4px;
+  }
+
+  .day span {
+    border-left: 1px solid var(--ink);
+    padding-left: 5px;
+    margin-left: 3px;
+  }
+
+  .facts {
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 13.5px;
+    letter-spacing: -0.01em;
+    margin-bottom: 12px;
+    min-height: 54px;
+  }
+
+  /* Set Up */
+  .car-wrap {
+    position: absolute;
+    left: 30px;
+    top: 56px;
+    width: 360px;
+    height: 166px;
+  }
+
+  .car {
+    width: 300px;
+    height: 112px;
+    display: block;
+  }
+
+  .car[hidden],
+  .car3d[hidden] {
+    display: none;
+  }
+
+  .car3d {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 340px;
+    height: 150px;
+    cursor: grab;
+    touch-action: none;
+    z-index: 1;
+  }
+
+  .car3d:active {
+    cursor: grabbing;
+  }
+
+  .car-lines {
+    position: absolute;
+    left: 0;
+    top: 0;
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  .part-panel {
+    position: absolute;
+    left: 30px;
+    top: 222px;
+    width: 196px;
+    height: 100px;
+    background: #e3e8c2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .part-panel canvas {
+    width: 92px;
+    height: 92px;
+  }
+
+  .last-label {
+    position: absolute;
+    left: 226px;
+    top: 230px;
+    width: 156px;
+    text-align: center;
+    font-size: 11px;
+    font-weight: 500;
+  }
+
+  .last-panel {
+    position: absolute;
+    left: 226px;
+    top: 248px;
+    width: 156px;
+    height: 74px;
+    background: #c4cbcd;
+    color: #fff;
+    font-family: 'Michroma', 'Archivo', sans-serif;
+    font-size: 26px;
+    -webkit-text-stroke: 0.8px #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .usebar {
+    position: absolute;
+    left: 30px;
+    top: 334px;
+    width: 352px;
+    height: 11px;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 1px;
+    background: #6c7576;
+    border: 1px solid #6c7576;
+  }
+
+  .usebar div {
+    background: #d5dadc;
+  }
+
+  .usebar div.lit {
+    background: #3e4647;
+  }
+
+  .usebar-labels {
+    position: absolute;
+    left: 30px;
+    top: 347px;
+    width: 352px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 10px;
+    font-weight: 500;
+  }
+
+  .setup-desc {
+    position: absolute;
+    left: 30px;
+    top: 372px;
+    width: 352px;
+    font-size: 11px;
+    line-height: 13.5px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+
+  .tr-title {
+    font-weight: 600;
+    font-size: 13px;
+  }
+
+  .tr-sub {
+    font-size: 10px;
+    margin-bottom: 2px;
+  }
+
+  .tr-big {
+    font-family: 'Michroma', 'Archivo', sans-serif;
+    font-size: 26px;
+    color: #fff;
+    -webkit-text-stroke: 0.8px #fff;
+    margin-bottom: 8px;
+  }
+
+  .tr-big small {
+    font-family: 'Archivo', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    -webkit-text-stroke: 0;
+  }
+
+  .driver {
+    display: flex;
+    flex-direction: column;
+    font-size: 10.5px;
+    line-height: 13px;
+    margin-bottom: 12px;
+  }
+
+  .driver strong {
+    font-size: 13px;
+    line-height: 16px;
+  }
+
+  .rotate-hint {
+    display: none;
+    margin-top: 12px;
+    font-family: 'Archivo', sans-serif;
+    font-size: 13px;
+    color: #9bb1a8;
+  }
+
+  @media (orientation: portrait) and (max-width: 700px) {
+    .rotate-hint {
+      display: block;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .menu-row {
+      transition: none;
+    }
+  }
+</style>

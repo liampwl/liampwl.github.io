@@ -8,38 +8,38 @@ export interface ExperienceEntry {
 
 export const experience: ExperienceEntry[] = [
   {
-    organization: 'Hanoi Medical University',
-    role: 'MPH Practicum Intern',
-    dateRange: 'Jun — Jul 2026',
-    location: 'Hanoi, Vietnam',
-    description: 'Conducting practicum research on disruptions to HIV prevention service delivery at a clinic affiliated with Hanoi Medical University, examining how global funding and policy shifts reach the front lines of care.',
-  },
-  {
     organization: 'The Water Institute at UNC',
-    role: 'Work-Study Student, Healthcare Facilities Team',
+    role: 'Graduate Work-Study Student, Communities of Practice',
     dateRange: 'Sep 2025 — Present',
     location: 'Chapel Hill, NC',
-    description: 'Managing two global Communities of Practice with 1,000+ members, coordinating webinars on circuit rider interventions and WASH in healthcare facilities. Synthesizing 2,000+ pages of programmatic reports into a longitudinal database for World Vision\'s "Act to Save" evaluation in Niger.',
+    description: 'Coordinating webinar production for two global professional communities (1,000+ members across 50+ countries), from stakeholder outreach and communications campaigns to event logistics; increased average WASH in healthcare facilities webinar attendance by 50%. Helped launch the Circuit Riders Community of Practice, including washcircuitriders.org, a subscriber base grown from 0 to 297, and a bimonthly webinar series.',
+  },
+  {
+    organization: 'Center for Research and Training on Substance Use-HIV, Hanoi Medical University',
+    role: 'MPH Practicum Intern, Global Health',
+    dateRange: 'Jun — Jul 2026',
+    location: 'Hanoi, Vietnam',
+    description: 'Designed and ran an interrupted time series analysis of seven years of clinic records, estimating ~750 person-years of PrEP coverage lost after the 2025 PEPFAR/CDC funding transition, with post-transition declines of 57% in service visits and 65% in new PrEP initiations. Built the R pipeline from raw REDCap exports and presented findings to clinic leadership and U.S. CDC staff in Hanoi.',
   },
   {
     organization: 'FHI 360',
     role: 'Stanback Fellow, Research & Knowledge Management — WASH',
     dateRange: 'May — Aug 2024',
     location: 'Durham, NC',
-    description: 'Supported global hygiene implementation through the Global Handwashing Partnership. Co-developed the Just Ask initiative, piloting AI-assisted microlearning tools to translate peer-reviewed evidence into field-ready guidance.',
+    description: 'Developed resources for the Just Ask microlearning initiative and wrote a ChatGPT-assisted drafting procedure with citation verification and technical review steps. Developed Global Handwashing Day campaign materials and reviewed a hand-hygiene research summary for accurate interpretation of findings.',
   },
   {
     organization: 'USAID',
     role: 'Student Trainee, Bureau for Global Health — Office of HIV/AIDS',
     dateRange: 'May — Aug 2023',
     location: 'Washington, DC',
-    description: 'Conducted compliance reviews for $2M+ in HIV/AIDS subawards across 20+ country teams under PEPFAR. Supported global mechanisms like EpiC and helped design the Office-wide orientation for incoming Country Operational Plan coordinators.',
+    description: 'Conducted compliance reviews for $2M+ in HIV/AIDS subawards across 20+ country teams under PEPFAR. Coordinated technical inputs for Country Operational Plans and key population programming under EpiC, and helped design the Office-wide orientation for incoming COP coordinators and medical officers.',
   },
   {
     organization: 'Pathfinders for Greenways',
     role: 'Marketing Consultant',
     dateRange: 'Aug 2021 — Present',
     location: 'Roanoke, VA',
-    description: 'Leading donor communications strategy contributing to $120k+ in annual fundraising. Designing and distributing 4,000+ donor newsletters annually.',
+    description: 'Leading donor communications for a regional greenway nonprofit, contributing to $120k+ in annual fundraising. Designing and distributing 4,000+ donor newsletters annually.',
   },
 ];

@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://liampwl.com/sitemap.xml
+Sitemap: https://liampwl.com/sitemap-index.xml
