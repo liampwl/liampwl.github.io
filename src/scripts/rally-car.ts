@@ -78,9 +78,10 @@ function ps2Material(src: MeshStandardMaterial, env: CubeTexture): Material {
   const name = src.name ?? '';
   const color = src.color?.clone() ?? new Color(1, 1, 1);
   if (/Car Paint|Gris Ascot/i.test(name)) {
+    // Platinum white, the actual car's paint
     return new MeshPhongMaterial({
-      color, specular: 0x8a8a8a, shininess: 38,
-      envMap: env, combine: MixOperation, reflectivity: 0.22,
+      color: new Color('#e4e1d8'), specular: 0x9a9890, shininess: 42,
+      envMap: env, combine: MixOperation, reflectivity: 0.18,
     });
   }
   if (/Windows Ext|Black Glossy/i.test(name)) {
