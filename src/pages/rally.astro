@@ -124,13 +124,12 @@ const skills = [
 
         <div class="pane" data-pane="setup" hidden>
           <div class="car-wrap">
-            <canvas class="car" id="car" width="128" height="48"></canvas>
-            <svg class="car-lines" width="360" height="80" viewBox="0 0 360 80" aria-hidden="true">
-              <g stroke="#f2f4ee" stroke-width="1" fill="none">
-                <path d="M70 0 V44 M86 0 V44 M218 0 V44 M234 0 V44 M70 44 H234 M150 44 V80" />
-              </g>
-              <circle cx="70" cy="0" r="3" fill="#f2f4ee" />
-              <circle cx="234" cy="0" r="3" fill="#f2f4ee" />
+            <canvas class="car" id="car" width="128" height="48" hidden></canvas>
+            <canvas class="car3d" id="car3d" width="340" height="150" aria-label="Rotating model of a Volkswagen Tiguan; drag to spin"></canvas>
+            <svg class="car-lines" width="360" height="166" viewBox="0 0 360 166" aria-hidden="true">
+              <path id="car-line-path" stroke="#f2f4ee" stroke-width="1" fill="none" d="" />
+              <circle id="hub-a" r="3" fill="#f2f4ee" cx="-10" cy="-10" />
+              <circle id="hub-b" r="3" fill="#f2f4ee" cx="-10" cy="-10" />
             </svg>
           </div>
           <div class="part-panel"><canvas id="part-icon" width="48" height="48"></canvas></div>
@@ -148,7 +147,7 @@ const skills = [
               <strong>Liam Powell</strong>
               <span>Base: Chapel Hill, NC</span>
               <span>Class: MPH 2027</span>
-              <span>Drive: 4WD</span>
+              <span>Car: VW Tiguan</span>
             </div>
             <ol class="list" id="skill-list"></ol>
           </div>
@@ -162,6 +161,29 @@ const skills = [
     </div>
     <p class="rotate-hint">Best in landscape. It's 4:3, like God intended.</p>
   </div>
+
+  <script>
+    let started = false;
+    document.addEventListener('rally:setup', async () => {
+      if (started) return;
+      started = true;
+      try {
+        const { mountCar } = await import('../scripts/rally-car');
+        await mountCar(
+          document.getElementById('car3d') as HTMLCanvasElement,
+          document.getElementById('car-line-path') as unknown as SVGPathElement,
+          [
+            document.getElementById('hub-a') as unknown as SVGCircleElement,
+            document.getElementById('hub-b') as unknown as SVGCircleElement,
+          ],
+          { barY: 150, stemX: 98, stemY: 166 },
+        );
+      } catch (err) {
+        console.warn('Rally car fell back to 2D:', err);
+        document.dispatchEvent(new CustomEvent('rally:car-fallback'));
+      }
+    });
+  </script>
 
   <noscript><p style="padding:2rem">Rally mode needs JavaScript. <a href="/">Back to the normal site</a>.</p></noscript>
 
@@ -351,6 +373,7 @@ const skills = [
       function tab(name) {
         if (name === 'quit') { show('menu'); return; }
         currentTab = name;
+        if (name === 'setup') document.dispatchEvent(new CustomEvent('rally:setup'));
         document.querySelectorAll('.tabs [data-tab]').forEach((b) => b.classList.toggle('on', b.dataset.tab === name));
         document.querySelectorAll('.pane').forEach((p) => (p.hidden = p.dataset.pane !== name));
       }
@@ -461,7 +484,14 @@ const skills = [
       }
 
       // Set Up: skills as car parts
-      raster($('#car'), CAR);
+      // The 3D car loads on first visit to Set Up; the pixel car is the fallback
+      document.addEventListener('rally:car-fallback', () => {
+        $('#car3d').hidden = true;
+        $('#car').hidden = false;
+        raster($('#car'), CAR);
+        $('#car-line-path').setAttribute('d', 'M70 86 V130 M234 86 V130 M70 130 H234 M98 130 V166');
+        ['#hub-a', '#hub-b'].forEach((id, i) => { $(id).setAttribute('cx', i ? 234 : 70); $(id).setAttribute('cy', 86); });
+      });
       const now = new Date();
       const nowMMYY = `${String(now.getMonth() + 1).padStart(2, '0')}:${String(now.getFullYear()).slice(2)}`;
       const grad = new Date(2027, 4, 8);
@@ -926,7 +956,9 @@ const skills = [
   .car-wrap {
     position: absolute;
     left: 30px;
-    top: 58px;
+    top: 56px;
+    width: 360px;
+    height: 166px;
   }
 
   .car {
@@ -935,10 +967,32 @@ const skills = [
     display: block;
   }
 
+  .car[hidden],
+  .car3d[hidden] {
+    display: none;
+  }
+
+  .car3d {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 340px;
+    height: 150px;
+    cursor: grab;
+    touch-action: none;
+    z-index: 1;
+  }
+
+  .car3d:active {
+    cursor: grabbing;
+  }
+
   .car-lines {
     position: absolute;
     left: 0;
-    top: 86px;
+    top: 0;
+    pointer-events: none;
+    z-index: 2;
   }
 
   .part-panel {
