@@ -10,18 +10,24 @@ export interface ProjectEntry {
 
 export const projects: ProjectEntry[] = [
   {
+    title: 'PEPFAR Funding Terminations and PrEP Services in Hanoi',
+    description: 'Mixed-methods practicum study combining an interrupted time series of clinic program data with staff interviews to measure how the October 2025 PEPFAR terminations disrupted PrEP enrollment and retention among MSM at a Hanoi sexual health clinic.',
+    tags: ['Interrupted Time Series', 'Qualitative Interviews', 'HIV Prevention', 'Vietnam'],
+    date: 'Jun — Jul 2026',
+    association: 'CREATA-H, Hanoi Medical University',
+  },
+  {
+    title: 'Bridging the Divide',
+    description: 'Signature Work thesis analyzing 2,300+ USAID policy and program documents with BERTopic topic modeling to compare global health and development priorities across the Trump and Biden administrations. Found disease-specific bilateral programming dominant under Trump, with multilateral engagement and reproductive health expanding under Biden.',
+    tags: ['Python', 'NLP', 'BERTopic', 'Policy Analysis'],
+    date: 'Feb 2024 — Mar 2025',
+    association: 'Duke Kunshan University',
+  },
+  {
     title: 'CliniCrush',
     description: 'Full-stack clinical trial matching platform built with React and Flask, featuring a custom eligibility algorithm querying 1,000+ trials from ClinicalTrials.gov. Built and deployed in 24 hours during HackDKU 2025.',
     tags: ['React', 'Flask', 'Healthcare', '1st Place — HackDKU 2025'],
     date: 'Apr 2025',
-    github: 'https://github.com/liampwl',
-  },
-  {
-    title: 'Bridging the Divide',
-    description: 'Signature Work thesis analyzing 2,300+ USAID policy documents using BERTopic topic modeling to compare global health priorities across the Trump and Biden administrations. Identified shifts toward localization and health systems strengthening.',
-    tags: ['Python', 'NLP', 'BERTopic', 'Policy Analysis'],
-    date: 'Feb 2024 — Mar 2025',
-    association: 'Duke Kunshan University',
   },
   {
     title: 'Global Handwashing Day 2024',
@@ -29,19 +35,5 @@ export const projects: ProjectEntry[] = [
     tags: ['Graphic Design', 'Health Advocacy', 'Campaign Strategy'],
     date: 'May — Aug 2024',
     association: 'FHI 360',
-  },
-  {
-    title: 'Pathfinders for Greenways Newsletters',
-    description: 'Annual donor newsletters designed and distributed to 4,000+ supporters, supporting organizational sustainability and donor engagement for a regional greenway advocacy nonprofit.',
-    tags: ['InDesign', 'Nonprofit Marketing', 'Graphic Design'],
-    date: '2021 — Present',
-    association: 'Pathfinders for Greenways',
-  },
-  {
-    title: 'Text-as-Data in Judicial Politics',
-    description: 'Bibliographical research on text-as-data approaches in judicial politics for Prof. Jason Todd, covering document classifiers, topic models, and sentiment analysis studies from 2016–2024.',
-    tags: ['Literature Review', 'LaTeX', 'Political Science'],
-    date: 'Sep 2024',
-    association: 'Duke Kunshan University',
   },
 ];
