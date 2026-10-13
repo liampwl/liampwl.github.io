@@ -45,6 +45,15 @@ const TIPS = [
 
 // Times are multiples of par, which is about what the car manages driven
 // flat-out on the ideal line
+// Stage-specific tips, from the field notes
+const LOCAL_TIPS: Record<string, string[]> = {
+  SS02: [
+    'Many shops and offices in Hanoi close for an hour and a half or more at lunch. Do not come back early.',
+    'Egg coffee and salt coffee both count as fuel.',
+    'If the office gets enough daylight, leave the overhead lights off. Someone will kindly show you the switch anyway.',
+  ],
+};
+
 const RIVALS: [string, string, number][] = [
   ['Reviewer 2', 'Subaru Impreza', 1.005],
   ['Reviewer 1', 'Ford Focus', 1.05],
@@ -214,7 +223,9 @@ class Session {
 
   async load() {
     const { spec } = this;
-    $('#load-tip').textContent = TIPS[Math.floor(Math.random() * TIPS.length)];
+    const local = LOCAL_TIPS[spec.code];
+    const pool = local && Math.random() < 0.6 ? local : TIPS;
+    $('#load-tip').textContent = pool[Math.floor(Math.random() * pool.length)];
     const bar = $('#load-bar');
     const progress = (p: number) => (bar.style.width = `${Math.round(p * 100)}%`);
     const tick = () => new Promise((r) => setTimeout(r, 0));
