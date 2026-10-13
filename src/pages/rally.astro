@@ -297,6 +297,16 @@ const records = [
       </section>
     </div>
     <p class="rotate-hint">Best in landscape. It's 4:3, like God intended.</p>
+    <div class="turn-hint" aria-live="polite">
+      <svg width="56" height="56" viewBox="0 0 56 56" aria-hidden="true">
+        <g fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round">
+          <rect x="20" y="6" width="16" height="28" rx="2.5" />
+          <rect x="10" y="34" width="36" height="16" rx="2.5" opacity="0.45" />
+          <path d="M44 14a14 14 0 0 1 4 12m0 0l-4-2.5m4 2.5l2.4-4" stroke-linecap="round" />
+        </g>
+      </svg>
+      <p>Turn your phone sideways to drive.</p>
+    </div>
   </div>
 
   <script>
@@ -340,13 +350,27 @@ const records = [
       const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
       /* ---------- scale the 640x480 screen into the window ---------- */
+      // The screen is centered inside a fixed, clipped frame so a 640px box never
+      // makes a phone zoom the whole page out to fit it
       const cmr = $('#cmr');
+      const frameEl = cmr.parentElement;
+      const coarse = window.matchMedia('(pointer: coarse)');
       function fit() {
-        const s = Math.min(window.innerWidth / 640, window.innerHeight / 480);
-        cmr.style.transform = `scale(${s})`;
-        cmr.parentElement.style.setProperty('--h', `${480 * s}px`);
+        const w = window.innerWidth, h = window.innerHeight;
+        const s = Math.min(w / 640, h / 480);
+        cmr.style.transform = `translate(-50%, -50%) scale(${s})`;
+        // On wide touch screens the pillarbox bars are big enough to hold the
+        // driving controls, which keeps them off the road
+        const bar = (w - 640 * s) / 2;
+        frameEl.style.setProperty('--bar', `${bar}px`);
+        const side = coarse.matches && bar >= 96;
+        frameEl.classList.toggle('side-touch', side);
+        const pad = $('#touch');
+        if (side && pad.parentElement !== frameEl) frameEl.appendChild(pad);
+        else if (!side && pad.parentElement === frameEl) $('#stage-pause').before(pad);
       }
       window.addEventListener('resize', fit);
+      coarse.addEventListener?.('change', fit);
       fit();
 
       /* ---------- low-res rasterizer: draw small, display big ---------- */
@@ -811,13 +835,11 @@ const records = [
   }
 
   .cmr-frame {
-    width: 100vw;
-    height: 100vh;
-    height: 100dvh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
   }
 
   .cmr {
@@ -825,12 +847,12 @@ const records = [
     --ink: #2a2e2f;
     --light: #f2f4ee;
     --rule: rgba(242, 244, 238, 0.8);
-    position: relative;
-    flex: none;
+    position: absolute;
+    left: 50%;
+    top: 50%;
     width: 640px;
     height: 480px;
-    margin-bottom: calc(var(--h, 480px) - 480px);
-    transform-origin: top center;
+    transform-origin: center;
     overflow: hidden;
     font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif;
     font-stretch: 88%;
@@ -1664,6 +1686,109 @@ const records = [
   .touch [data-k='gas'] { left: 508px; top: 236px; width: 72px; height: 122px; }
   .touch [data-k='pause'] { left: 436px; top: 14px; width: 40px; height: 34px; }
 
+  /* Driving controls in the pillarbox bars (wide touch screens) */
+  .cmr-frame > .touch {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    pointer-events: none;
+    --gap: 12px;
+  }
+
+  .cmr-frame > .touch button {
+    position: absolute;
+    inset: auto;
+    pointer-events: auto;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+    font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: #f2f4ee;
+    background: rgba(141, 150, 149, 0.16);
+    border: 1px solid rgba(242, 244, 238, 0.5);
+    border-radius: 0;
+    padding: 0;
+  }
+
+  .cmr-frame > .touch button.on {
+    background: rgba(242, 244, 238, 0.32);
+  }
+
+  .cmr-frame > .touch [data-k='left'],
+  .cmr-frame > .touch [data-k='right'] {
+    bottom: calc(var(--gap) * 1.5);
+    width: calc((min(var(--bar), 220px) - var(--gap) * 3) / 2);
+    height: min(46vh, 170px);
+    font-size: 22px;
+  }
+
+  .cmr-frame > .touch [data-k='left'] {
+    left: var(--gap);
+  }
+
+  .cmr-frame > .touch [data-k='right'] {
+    left: calc(var(--gap) * 2 + (min(var(--bar), 220px) - var(--gap) * 3) / 2);
+  }
+
+  .cmr-frame > .touch [data-k='gas'] {
+    right: var(--gap);
+    bottom: calc(var(--gap) * 1.5);
+    width: calc((min(var(--bar), 220px) - var(--gap) * 3) * 0.55);
+    height: min(58vh, 210px);
+  }
+
+  .cmr-frame > .touch [data-k='brake'] {
+    right: calc(var(--gap) * 2 + (min(var(--bar), 220px) - var(--gap) * 3) * 0.55);
+    bottom: calc(var(--gap) * 1.5);
+    width: calc((min(var(--bar), 220px) - var(--gap) * 3) * 0.45);
+    height: min(34vh, 120px);
+  }
+
+  .cmr-frame > .touch [data-k='hand'] {
+    right: calc(var(--gap) * 2 + (min(var(--bar), 220px) - var(--gap) * 3) * 0.55);
+    bottom: calc(var(--gap) * 2.5 + min(34vh, 120px));
+    width: calc((min(var(--bar), 220px) - var(--gap) * 3) * 0.45);
+    height: min(18vh, 64px);
+  }
+
+  .cmr-frame > .touch [data-k='pause'] {
+    right: var(--gap);
+    top: var(--gap);
+    width: 48px;
+    height: 40px;
+  }
+
+  /* Portrait while driving: pause and ask for landscape */
+  .turn-hint {
+    display: none;
+  }
+
+  @media (orientation: portrait) and (pointer: coarse) {
+    html.rally-racing .turn-hint {
+      position: absolute;
+      inset: 0;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      padding: 24px;
+      background: rgba(6, 8, 8, 0.88);
+      color: #9bb1a8;
+      font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    html.rally-racing .rotate-hint {
+      display: none;
+    }
+  }
+
   .stage-pause {
     position: absolute;
     inset: 0;
@@ -1773,7 +1898,11 @@ const records = [
 
   .rotate-hint {
     display: none;
-    margin-top: 12px;
+    position: absolute;
+    left: 16px;
+    right: 16px;
+    bottom: 32px;
+    text-align: center;
     font-family: 'Archivo', sans-serif;
     font-size: 13px;
     color: #9bb1a8;

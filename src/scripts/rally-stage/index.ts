@@ -64,6 +64,25 @@ const RIVALS: [string, string, number][] = [
 
 const $ = <T extends HTMLElement = HTMLElement>(sel: string) => document.querySelector(sel) as T;
 const show = (name: string) => document.dispatchEvent(new CustomEvent('rally:show', { detail: name }));
+
+// Marks a stage in progress, so the page can ask portrait phones to rotate
+const setRacing = (on: boolean) => document.documentElement.classList.toggle('rally-racing', on);
+
+// Android browsers can go fullscreen and hold landscape; iPhone Safari can't,
+// so this quietly does nothing there
+function enterFullscreen() {
+  if (!window.matchMedia('(pointer: coarse)').matches) return;
+  const el = document.documentElement;
+  if (!document.fullscreenEnabled || document.fullscreenElement || !el.requestFullscreen) return;
+  el.requestFullscreen({ navigationUI: 'hide' })
+    .then(() => (screen.orientation as ScreenOrientation & { lock?: (o: string) => Promise<void> }).lock?.('landscape'))
+    .catch(() => {});
+}
+
+function exitFullscreen() {
+  screen.orientation?.unlock?.();
+  if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+}
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const bot = new URLSearchParams(location.search).has('bot');
 
@@ -325,7 +344,10 @@ class Session {
           done(true);
         } else if (e.code === 'Escape') done(false);
       };
-      const onClick = () => done(true);
+      const onClick = () => {
+        enterFullscreen();
+        done(true);
+      };
       const held = new Set<number>();
       const poll = () => {
         const p = Array.from(navigator.getGamepads?.() ?? []).find((x) => x && x.connected);
@@ -368,6 +390,7 @@ class Session {
 
   begin() {
     show('race');
+    setRacing(true);
     this.hintUntil = performance.now() + 9000;
     this.on(window, 'keydown', (e) => this.onKey(e as KeyboardEvent, true));
     this.on(window, 'keyup', (e) => this.onKey(e as KeyboardEvent, false));
@@ -375,6 +398,12 @@ class Session {
       if (document.hidden && this.phase !== 'results') this.setPaused(true);
     });
     this.on(window, 'blur', () => this.keys.clear());
+    // A phone held upright can't see the road; hold the stage until it turns
+    const portrait = window.matchMedia('(orientation: portrait) and (pointer: coarse)');
+    const holdForPortrait = () => {
+      if (portrait.matches && this.phase !== 'results' && !this.paused) this.setPaused(true);
+    };
+    this.on(portrait, 'change', holdForPortrait);
     this.setupTouch();
     this.pauseItems = menu($('#pause-list'), [
       { label: 'Continue', go: () => this.setPaused(false) },
@@ -384,6 +413,7 @@ class Session {
     ], (i) => (this.pauseIdx = i));
     this.last = performance.now();
     this.raf = requestAnimationFrame(this.frame);
+    holdForPortrait();
   }
 
   private soundLabel() {
@@ -893,12 +923,14 @@ class Session {
     this.resultIdx = 1;
     this.highlight(this.resultItems, 1);
     $('#touch').hidden = true;
+    setRacing(false);
     show('results');
   }
 
   private retry() {
     this.reset();
     show('race');
+    setRacing(true);
     if (window.matchMedia('(pointer: coarse)').matches) $('#touch').hidden = false;
   }
 
@@ -911,6 +943,8 @@ class Session {
     for (const m of this.brakeMats) m.dispose();
     $('#stage-pause').hidden = true;
     $('#touch').hidden = true;
+    setRacing(false);
+    exitFullscreen();
     running = false;
     document.dispatchEvent(new CustomEvent('rally:race-exit', { detail: this.spec.index }));
   }
