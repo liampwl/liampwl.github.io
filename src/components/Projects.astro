@@ -22,6 +22,13 @@ import { projects } from '../data/projects';
           {project.award && <p class="project-award">{project.award}</p>}
           <p class="project-desc">{project.description}</p>
           <p class="project-tags">{project.tags.join(' · ')}</p>
+          {(project.url || project.github) && (
+            <p class="project-links">
+              {project.url && <a href={project.url} target="_blank" rel="noopener noreferrer">Live app</a>}
+              {project.url && project.github && <span aria-hidden="true">·</span>}
+              {project.github && <a href={project.github} target="_blank" rel="noopener noreferrer">Code</a>}
+            </p>
+          )}
         </article>
       ))}
     </div>
@@ -82,5 +89,13 @@ import { projects } from '../data/projects';
     font-style: italic;
     font-family: var(--font-display);
     color: var(--color-text-tertiary);
+  }
+
+  .project-links {
+    font-size: var(--text-small);
+    color: var(--color-text-tertiary);
+    display: flex;
+    gap: 0.6rem;
+    margin-top: 0.6rem;
   }
 </style>
