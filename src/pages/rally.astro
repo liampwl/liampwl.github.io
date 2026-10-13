@@ -69,6 +69,31 @@ const skills = [
   { name: 'InDesign', icon: 'page', used: [4], last: 'now', desc: 'Donor newsletters for Pathfinders for Greenways, 4,000+ a year.' },
   { name: 'Mandarin', icon: 'lang', used: [5], last: null, desc: 'Intermediate. Three years living and studying in Kunshan.' },
 ];
+
+// Awards and fellowships, newest first. `stage` indexes into stages, or null
+// for anything earned off the CV's stages
+const records = [
+  {
+    short: 'Practicum Award', name: 'Practicum Excellence Award', org: 'UNC Gillings School of Global Public Health',
+    year: 2026, icon: 'cup', stage: 1, fresh: true,
+    desc: 'For the Hanoi practicum: an interrupted time series over seven years of clinic records, estimating ~750 person-years of PrEP coverage lost after the 2025 PEPFAR/CDC funding transition.',
+  },
+  {
+    short: 'Datathon Award', name: 'Most Creative Solution', org: 'UNC Gillings AI & Public Health Datathon',
+    year: 2026, icon: 'rosette', stage: null,
+    desc: 'BRFSS Insights, a diabetes risk estimation tool built on CDC BRFSS data. I designed the survey flow and front end; presenting it to NC DHHS leadership led to a proposed UNC–NC DHHS collaboration.',
+  },
+  {
+    short: 'HackDKU 1st', name: '1st Place, Healthcare/Biotech Track', org: 'HackDKU 2025, Duke Kunshan University',
+    year: 2025, icon: 'cup1', stage: 5,
+    desc: 'CliniCrush, a clinical trial matching platform built in React and Flask that queries 1,000+ trials from ClinicalTrials.gov. Built and deployed in 24 hours.',
+  },
+  {
+    short: 'Stanback Fellow', name: 'Stanback Fellow', org: 'Duke University',
+    year: 2024, icon: 'medal', stage: 2,
+    desc: 'The fellowship behind the summer at FHI 360, in research and knowledge management on the WASH team.',
+  },
+];
 ---
 
 <BaseLayout
@@ -92,7 +117,40 @@ const skills = [
         <svg class="menu-track" id="menu-track" viewBox="0 0 640 480" aria-hidden="true"></svg>
         <div class="menu-row-wrap"><div class="menu-row" id="menu-row"></div></div>
         <div class="menu-hint">Use the cursor keys to make your selection, press return to confirm.</div>
-        <div class="menu-build">LPRALLY2 Build 1 (Oct 3 2026)</div>
+        <div class="menu-build">LPRALLY2 Build 2 (Oct 13 2026)</div>
+      </section>
+
+      <!-- Records: awards as silverware -->
+      <section class="scr scr-records" data-screen="records" hidden>
+        <nav class="tabs" aria-label="Records">
+          <span class="on">Records</span>
+          <button id="rec-quit">Quit</button>
+        </nav>
+        <div class="player">Player 1 <span>liam</span></div>
+
+        <div class="trophy-panel"><canvas id="trophy" width="48" height="48"></canvas></div>
+        <div class="last-label rec-year-label">Awarded (yyyy)</div>
+        <div class="last-panel rec-year">
+          <span id="rec-year"></span>
+          <span class="rec-new" id="rec-new" hidden>New record</span>
+        </div>
+        <p class="rec-name" id="rec-name"></p>
+        <p class="rec-org" id="rec-org"></p>
+        <div class="usebar rec-bar" id="rec-bar"></div>
+        <div class="usebar-labels rec-bar-labels"><span>SS01</span><span id="rec-bar-label"></span><span>SS06</span></div>
+        <p class="setup-desc rec-desc" id="rec-desc"></p>
+        <ol class="list rec-go-wrap"><li><button id="rec-go"></button></li></ol>
+
+        <div class="col">
+          <div class="tr-title">Championship Records</div>
+          <div class="tr-sub">Awards and fellowships, newest first</div>
+          <ol class="list" id="record-list"></ol>
+        </div>
+
+        <div class="foot">
+          <span><i>↵</i> Go to stage <i>Esc</i> Back</span>
+          <span><i>↑</i><i>↓</i> Select</span>
+        </div>
       </section>
 
       <!-- Service area: Information / Set Up -->
@@ -187,7 +245,7 @@ const skills = [
 
   <noscript><p style="padding:2rem">Rally mode needs JavaScript. <a href="/">Back to the normal site</a>.</p></noscript>
 
-  <script is:inline define:vars={{ stages, skills, maps }}>
+  <script is:inline define:vars={{ stages, skills, records, maps }}>
     (function () {
       const $ = (s) => document.querySelector(s);
       const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -253,6 +311,19 @@ const skills = [
         lang: wrap('0 0 96 96', `<text x="48" y="62" text-anchor="middle" font-size="40" font-family="'PingFang SC','Noto Sans CJK SC','Microsoft YaHei',sans-serif" fill="#1f2222">中文</text>`),
       };
 
+      const GOLD = '#f3efa0';
+      const cupBody = (mark) => `<g ${L}><path d="M30 14H66V38C66 51 58 60 48 60S30 51 30 38Z" fill="${GOLD}"/><path d="M30 20H18C18 34 23 41 31 43M66 20H78C78 34 73 41 65 43"/><path d="M48 60V70"/><path d="M36 70H60V77H36Z" fill="${GOLD}"/><path d="M28 77H68V85H28Z"/></g>${mark}`;
+      const TROPHIES = {
+        cup: wrap('0 0 96 96', cupBody(`<path d="M48 24l3.5 7 7.5 1-5.5 5.3 1.3 7.5L48 41.3 41.2 44.8l1.3-7.5L37 32l7.5-1z" fill="#1f2222"/>`)),
+        cup1: wrap('0 0 96 96', cupBody(`<text x="48" y="48" text-anchor="middle" font-size="26" font-weight="700" font-family="Arial,sans-serif" fill="#1f2222">1</text>`)),
+        rosette: wrap('0 0 96 96', `<g ${L}><path d="M38 50L30 86 39 80 44 88 48 58M58 50L66 86 57 80 52 88 48 58"/>${Array.from({ length: 12 }, (_, i) => {
+          const a = (i * Math.PI) / 6;
+          return `<circle cx="${(48 + 19 * Math.cos(a)).toFixed(1)}" cy="${(34 + 19 * Math.sin(a)).toFixed(1)}" r="7" fill="${GOLD}"/>`;
+        }).join('')}<circle cx="48" cy="34" r="19" fill="${GOLD}" stroke="none"/><circle cx="48" cy="34" r="11"/></g>`),
+        medal: wrap('0 0 96 96', `<g ${L}><path d="M28 10H42L54 44H40Z M68 10H54L42 44H56Z"/><circle cx="48" cy="64" r="20" fill="#e4e8e6"/><circle cx="48" cy="64" r="12"/></g>`),
+      };
+      const CUP_MINI = wrap('0 0 10 10', `<path d="M2.5 1.5h5v2.4a2.5 2.5 0 0 1-5 0zM5 6.4v1.6M3 8.5h4" fill="none" stroke="#f2f4ee" stroke-width="1.1"/>`);
+
       const CHEVRON = wrap('0 0 10 10', `<rect x="0.5" y="0.5" width="9" height="9" fill="#c9cfcf" stroke="${INK}"/><path d="M3.5 2.5l3 2.5-3 2.5" fill="none" stroke="${INK}" stroke-width="1.4"/>`);
       const BOX = (checked) => wrap('0 0 10 10', `<rect x="0.5" y="0.5" width="9" height="9" fill="none" stroke="#f2f4ee"/>${checked ? `<path d="M2 5l2.2 2.4L8.4 2.6" fill="none" stroke="#f2f4ee" stroke-width="1.4"/>` : ''}`);
 
@@ -301,6 +372,7 @@ const skills = [
       const MENU = [
         { label: 'stages', go: () => { show('service'); tab('info'); } },
         { label: 'set up', go: () => { show('service'); tab('setup'); } },
+        { label: 'records', go: () => show('records') },
         { label: 'cv', go: () => (location.href = '/resume.pdf') },
         { label: 'email', go: () => (location.href = 'mailto:william.powell@unc.edu') },
         { label: 'network', go: () => window.open('https://linkedin.com/in/williampwl', '_blank', 'noopener') },
@@ -456,7 +528,9 @@ const skills = [
       let stageIdx = 0;
       const stageButtons = [];
       stages.forEach((st, i) => {
-        const { li, b } = listRow(`SS0${i + 1}  ${st.short}`);
+        const cup = records.some((r) => r.stage === i) ? iconCanvas(10, 10, CUP_MINI, 'box') : null;
+        if (cup) cup.title = 'Record set on this stage';
+        const { li, b } = listRow(`SS0${i + 1}  ${st.short}`, cup);
         b.addEventListener('click', () => selectStage(i));
         stageButtons.push(b);
         $('#stage-list').appendChild(li);
@@ -531,8 +605,51 @@ const skills = [
         $('#setup-desc').textContent = sk.desc;
       }
 
+      // Records: awards, each tied back to the stage it was earned on
+      let recordIdx = 0;
+      const recordButtons = [];
+      records.forEach((r, i) => {
+        const { li, b } = listRow(`${r.year}  ${r.short}`);
+        b.addEventListener('click', () => selectRecord(i));
+        recordButtons.push(b);
+        $('#record-list').appendChild(li);
+      });
+      for (let i = 0; i < stages.length; i++) $('#rec-bar').appendChild(document.createElement('div'));
+
+      const recGo = $('#rec-go');
+      recGo.appendChild(iconCanvas(10, 10, CHEVRON, 'chev'));
+      const recGoLabel = document.createElement('span');
+      recGo.appendChild(recGoLabel);
+
+      function selectRecord(i) {
+        recordIdx = (i + records.length) % records.length;
+        const r = records[recordIdx];
+        recordButtons.forEach((b, j) => b.classList.toggle('on', j === recordIdx));
+        raster($('#trophy'), TROPHIES[r.icon]);
+        $('#rec-year').textContent = r.year;
+        $('#rec-new').hidden = !r.fresh;
+        $('#rec-name').textContent = r.name;
+        $('#rec-org').textContent = r.org;
+        $('#rec-desc').textContent = r.desc;
+        Array.from($('#rec-bar').children).forEach((s, j) => s.classList.toggle('lit', j === r.stage));
+        const onStage = r.stage !== null;
+        $('#rec-bar-label').textContent = onStage ? 'Earned on stage' : 'Non-championship round';
+        $('.rec-go-wrap').hidden = !onStage;
+        if (onStage) recGoLabel.textContent = `Go to SS0${r.stage + 1}  ${stages[r.stage].short}`;
+      }
+      function goToRecordStage() {
+        const r = records[recordIdx];
+        if (r.stage === null) return;
+        show('service');
+        tab('info');
+        selectStage(r.stage);
+      }
+      recGo.addEventListener('click', goToRecordStage);
+      $('#rec-quit').addEventListener('click', () => show('menu'));
+
       selectStage(0);
       selectSkill(0);
+      selectRecord(0);
       tab('info');
 
       /* ---------- keyboard ---------- */
@@ -546,6 +663,12 @@ const skills = [
           return;
         }
         if (k === 'Escape') { show('menu'); return; }
+        if (screen === 'records') {
+          if (k === 'Enter') { e.preventDefault(); goToRecordStage(); return; }
+          const step = k === 'ArrowDown' ? 1 : k === 'ArrowUp' ? -1 : 0;
+          if (step) { e.preventDefault(); selectRecord(recordIdx + step); }
+          return;
+        }
         if (k === 'q' || k === 'e' || k === 'Q' || k === 'E') { tab(currentTab === 'info' ? 'setup' : 'info'); return; }
         const step = k === 'ArrowDown' ? 1 : k === 'ArrowUp' ? -1 : 0;
         if (!step) return;
@@ -1119,6 +1242,108 @@ const skills = [
     line-height: 16px;
   }
 
+  /* Records */
+  .scr-records {
+    background: var(--bg);
+  }
+
+  .trophy-panel {
+    position: absolute;
+    left: 30px;
+    top: 66px;
+    width: 196px;
+    height: 156px;
+    background: #e3e8c2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .trophy-panel canvas {
+    width: 120px;
+    height: 120px;
+  }
+
+  .last-label.rec-year-label {
+    top: 74px;
+  }
+
+  .last-panel.rec-year {
+    top: 92px;
+    height: 130px;
+  }
+
+  .rec-new {
+    position: absolute;
+    left: 50%;
+    bottom: 18px;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    font-family: 'Archivo', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    -webkit-text-stroke: 0;
+    color: #f3efa0;
+    background: var(--ink);
+    padding: 1px 5px;
+    animation: rec-blink 1.1s steps(1) infinite;
+  }
+
+  .rec-new[hidden] {
+    display: none;
+  }
+
+  @keyframes rec-blink {
+    50% { visibility: hidden; }
+  }
+
+  .rec-name {
+    position: absolute;
+    left: 30px;
+    top: 236px;
+    width: 352px;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 18px;
+    letter-spacing: -0.02em;
+    color: var(--light);
+  }
+
+  .rec-org {
+    position: absolute;
+    left: 30px;
+    top: 257px;
+    width: 352px;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 13.5px;
+  }
+
+  .usebar.rec-bar {
+    top: 284px;
+  }
+
+  .usebar-labels.rec-bar-labels {
+    top: 297px;
+  }
+
+  .setup-desc.rec-desc {
+    top: 320px;
+  }
+
+  .rec-go-wrap {
+    position: absolute;
+    left: 30px;
+    top: 392px;
+    width: 220px;
+  }
+
+  .rec-go-wrap[hidden] {
+    display: none;
+  }
+
   .rotate-hint {
     display: none;
     margin-top: 12px;
@@ -1133,9 +1358,19 @@ const skills = [
     }
   }
 
+  .cmr :focus-visible {
+    outline: 1px solid var(--light);
+    outline-offset: 1px;
+    border-radius: 0;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .menu-row {
       transition: none;
+    }
+
+    .rec-new {
+      animation: none;
     }
   }
 </style>

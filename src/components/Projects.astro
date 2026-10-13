@@ -19,6 +19,7 @@ import { projects } from '../data/projects';
           <p class="project-meta">
             {project.date}{project.association ? ` · ${project.association}` : ''}
           </p>
+          {project.award && <p class="project-award">{project.award}</p>}
           <p class="project-desc">{project.description}</p>
           <p class="project-tags">{project.tags.join(' · ')}</p>
         </article>
@@ -58,6 +59,15 @@ import { projects } from '../data/projects';
     font-size: var(--text-micro);
     color: var(--color-text-tertiary);
     margin-bottom: 0.75rem;
+  }
+
+  .project-award {
+    font-size: var(--text-micro);
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    margin: -0.35rem 0 0.75rem;
   }
 
   .project-desc {

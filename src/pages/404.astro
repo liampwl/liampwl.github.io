@@ -1,0 +1,90 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+import '../styles/theme.css';
+import '../styles/global.css';
+---
+
+<BaseLayout title="Page not found — Liam Powell">
+  <Fragment slot="head">
+    <meta name="robots" content="noindex" />
+  </Fragment>
+
+  <header class="masthead">
+    <div class="container">
+      <a href="/" class="masthead-name">Liam Powell</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="lost">
+      <div class="container">
+        <p class="lost-kicker">404</p>
+        <h1 class="lost-headline">Wrong turn.</h1>
+        <p class="lost-body">
+          There's nothing at this address. If you followed an old link, the page probably
+          moved when the site was rebuilt.
+        </p>
+        <p class="lost-links">
+          <a href="/">Back to the homepage</a>
+          <span aria-hidden="true">·</span>
+          <a href="/resume.pdf">CV</a>
+          <span aria-hidden="true">·</span>
+          <a href="mailto:william.powell@unc.edu">Email</a>
+        </p>
+      </div>
+    </section>
+  </main>
+</BaseLayout>
+
+<style>
+  .masthead {
+    border-bottom: 1px solid var(--color-rule);
+  }
+
+  .masthead .container {
+    padding-top: 1.5rem;
+    padding-bottom: 1.25rem;
+  }
+
+  .masthead-name {
+    font-family: var(--font-display);
+    font-size: 1.35rem;
+    font-weight: 500;
+    color: var(--color-text-primary);
+    text-decoration: none;
+  }
+
+  .lost {
+    padding-top: 4.5rem;
+  }
+
+  .lost-kicker {
+    font-size: var(--text-micro);
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-text-tertiary);
+    margin-bottom: 1.5rem;
+  }
+
+  .lost-headline {
+    font-size: var(--text-display);
+    margin-bottom: 1.5rem;
+  }
+
+  .lost-body {
+    color: var(--color-text-secondary);
+    line-height: var(--leading-relaxed);
+    max-width: 52ch;
+    margin-bottom: 2rem;
+  }
+
+  .lost-links {
+    font-size: var(--text-small);
+    color: var(--color-text-tertiary);
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+</style>

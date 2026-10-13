@@ -6,6 +6,7 @@ export interface ProjectEntry {
   url?: string;
   github?: string;
   association?: string;
+  award?: string;
 }
 
 export const projects: ProjectEntry[] = [
@@ -15,13 +16,15 @@ export const projects: ProjectEntry[] = [
     tags: ['R', 'REDCap', 'Interrupted Time Series', 'HIV Prevention'],
     date: 'Jun — Jul 2026',
     association: 'CREATA-H, Hanoi Medical University',
+    award: 'Practicum Excellence Award, 2026',
   },
   {
     title: 'BRFSS Insights',
     description: 'Diabetes risk estimation tool built on a logistic regression model of CDC BRFSS data. I designed the participant-facing survey flow and front end and deployed the Node.js prototype. Presented to NC DHHS leadership, leading to a proposed UNC–NC DHHS collaboration to develop and validate it further.',
-    tags: ['Node.js', 'Vercel', 'Predictive Modeling', 'Most Creative Solution'],
+    tags: ['Node.js', 'Vercel', 'Predictive Modeling'],
     date: 'Spring 2026 — Present',
     association: 'UNC Gillings AI & Public Health Datathon',
+    award: 'Most Creative Solution',
   },
   {
     title: 'Bridging the Divide',
@@ -33,7 +36,8 @@ export const projects: ProjectEntry[] = [
   {
     title: 'CliniCrush',
     description: 'Full-stack clinical trial matching platform built with React and Flask, featuring a custom eligibility algorithm querying 1,000+ trials from ClinicalTrials.gov. Built and deployed in 24 hours during HackDKU 2025.',
-    tags: ['React', 'Flask', 'Healthcare', '1st Place — HackDKU 2025'],
+    tags: ['React', 'Flask', 'Healthcare'],
     date: 'Apr 2025',
+    award: '1st Place, HackDKU 2025',
   },
 ];
