@@ -22,11 +22,20 @@ import { projects } from '../data/projects';
           {project.award && <p class="project-award">{project.award}</p>}
           <p class="project-desc">{project.description}</p>
           <p class="project-tags">{project.tags.join(' · ')}</p>
-          {(project.url || project.github) && (
+          {(project.url || project.github || project.post) && (
             <p class="project-links">
-              {project.url && <a href={project.url} target="_blank" rel="noopener noreferrer">Live app</a>}
-              {project.url && project.github && <span aria-hidden="true">·</span>}
-              {project.github && <a href={project.github} target="_blank" rel="noopener noreferrer">Code</a>}
+              {[
+                project.url && ['Live app', project.url],
+                project.github && ['Code', project.github],
+                project.post && ['Blog post', project.post],
+              ]
+                .filter((l): l is string[] => Boolean(l))
+                .map(([label, href], i) => (
+                  <>
+                    {i > 0 && <span aria-hidden="true">·</span>}
+                    <a href={href} target="_blank" rel="noopener noreferrer">{label}</a>
+                  </>
+                ))}
             </p>
           )}
         </article>

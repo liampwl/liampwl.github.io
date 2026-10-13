@@ -8,6 +8,13 @@ export interface ExperienceEntry {
 
 export const experience: ExperienceEntry[] = [
   {
+    organization: 'The Graduate School at UNC',
+    role: 'Graduate Research Assistant, Graduate Funding and Information Center',
+    dateRange: 'Sep 2026 — Present',
+    location: 'Chapel Hill, NC',
+    description: 'Writing and sending Funding and Fellowships Friday, the center\'s iContact newsletter to about 8,000 subscribers; rebuilt its email templates. Also running funding searches and database reviews, one-on-one funding consultations with students, and funding workshops for fellowship cohorts and classes.',
+  },
+  {
     organization: 'The Water Institute at UNC',
     role: 'Graduate Work-Study Student, Communities of Practice',
     dateRange: 'Sep 2025 — Present',

@@ -7,6 +7,7 @@ export interface ProjectEntry {
   github?: string;
   association?: string;
   award?: string;
+  post?: string;
 }
 
 export const projects: ProjectEntry[] = [
@@ -17,6 +18,7 @@ export const projects: ProjectEntry[] = [
     date: 'Jun — Jul 2026',
     association: 'CREATA-H, Hanoi Medical University',
     award: 'Practicum Excellence Award, 2026',
+    post: 'https://tarheels.live/globalhealth/2026/10/01/serious-work-silly-coffee-wrapping-up-in-hanoi/',
   },
   {
     title: 'BRFSS Insights',
