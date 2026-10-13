@@ -19,8 +19,25 @@ import { projects } from '../data/projects';
           <p class="project-meta">
             {project.date}{project.association ? ` · ${project.association}` : ''}
           </p>
+          {project.award && <p class="project-award">{project.award}</p>}
           <p class="project-desc">{project.description}</p>
           <p class="project-tags">{project.tags.join(' · ')}</p>
+          {(project.url || project.github || project.post) && (
+            <p class="project-links">
+              {[
+                project.url && ['Live app', project.url],
+                project.github && ['Code', project.github],
+                project.post && ['Blog post', project.post],
+              ]
+                .filter((l): l is string[] => Boolean(l))
+                .map(([label, href], i) => (
+                  <>
+                    {i > 0 && <span aria-hidden="true">·</span>}
+                    <a href={href} target="_blank" rel="noopener noreferrer">{label}</a>
+                  </>
+                ))}
+            </p>
+          )}
         </article>
       ))}
     </div>
@@ -60,6 +77,15 @@ import { projects } from '../data/projects';
     margin-bottom: 0.75rem;
   }
 
+  .project-award {
+    font-size: var(--text-micro);
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    margin: -0.35rem 0 0.75rem;
+  }
+
   .project-desc {
     font-size: var(--text-small);
     color: var(--color-text-secondary);
@@ -72,5 +98,13 @@ import { projects } from '../data/projects';
     font-style: italic;
     font-family: var(--font-display);
     color: var(--color-text-tertiary);
+  }
+
+  .project-links {
+    font-size: var(--text-small);
+    color: var(--color-text-tertiary);
+    display: flex;
+    gap: 0.6rem;
+    margin-top: 0.6rem;
   }
 </style>

@@ -8,6 +8,13 @@ export interface ExperienceEntry {
 
 export const experience: ExperienceEntry[] = [
   {
+    organization: 'The Graduate School at UNC',
+    role: 'Graduate Research Assistant, Graduate Funding and Information Center',
+    dateRange: 'Sep 2026 — Present',
+    location: 'Chapel Hill, NC',
+    description: 'Writing and sending Funding and Fellowships Friday, the center\'s iContact newsletter to about 8,000 subscribers; rebuilt its email templates. Also running funding searches and database reviews, one-on-one funding consultations with students, and funding workshops for fellowship cohorts and classes.',
+  },
+  {
     organization: 'The Water Institute at UNC',
     role: 'Graduate Work-Study Student, Communities of Practice',
     dateRange: 'Sep 2025 — Present',
@@ -19,7 +26,7 @@ export const experience: ExperienceEntry[] = [
     role: 'MPH Practicum Intern, Global Health',
     dateRange: 'Jun — Jul 2026',
     location: 'Hanoi, Vietnam',
-    description: 'Designed and ran an interrupted time series analysis of seven years of clinic records, estimating ~750 person-years of PrEP coverage lost after the 2025 PEPFAR/CDC funding transition, with post-transition declines of 57% in service visits and 65% in new PrEP initiations. Built the R pipeline from raw REDCap exports and presented findings to clinic leadership and U.S. CDC staff in Hanoi.',
+    description: 'Designed and ran an interrupted time series analysis of seven years of clinic records on PrEP services before and after the 2025 PEPFAR/CDC funding transition. Built the R pipeline from raw REDCap exports, reconstructing the clinic\'s own Stata reporting definitions, and presented findings to clinic leadership and U.S. CDC staff in Hanoi.',
   },
   {
     organization: 'FHI 360',

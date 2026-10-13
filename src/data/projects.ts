@@ -6,22 +6,29 @@ export interface ProjectEntry {
   url?: string;
   github?: string;
   association?: string;
+  award?: string;
+  post?: string;
 }
 
 export const projects: ProjectEntry[] = [
   {
     title: 'PEPFAR Funding Transition and PrEP Services in Hanoi',
-    description: 'Interrupted time series analysis of seven years of records from a Hanoi sexual health clinic, estimating ~750 person-years of PrEP coverage lost after the 2025 PEPFAR/CDC funding transition and declines of 57% in visits, 61% in dispensing, and 65% in new initiations. Delivered a findings memo, a reproducible analysis repository with an automated audit script, and the clinic database\'s first data dictionary.',
+    description: 'Interrupted time series analysis of seven years of records from a Hanoi sexual health clinic after free PrEP medication ran out in the 2025 PEPFAR/CDC funding transition. Fitted July 2025 counts were 64% below the model\'s counterfactual for visits, 67% for dispensing, and 69% for new PrEP starts, and the ratio of new starts to new HIV-negative testers fell from 83% to 39%. Delivered a findings memo, a reproducible analysis repository with an automated audit script, and the clinic database\'s first data dictionary.',
     tags: ['R', 'REDCap', 'Interrupted Time Series', 'HIV Prevention'],
     date: 'Jun — Jul 2026',
     association: 'CREATA-H, Hanoi Medical University',
+    award: 'Practicum Excellence Award, 2026',
+    post: 'https://tarheels.live/globalhealth/2026/10/01/serious-work-silly-coffee-wrapping-up-in-hanoi/',
   },
   {
     title: 'BRFSS Insights',
     description: 'Diabetes risk estimation tool built on a logistic regression model of CDC BRFSS data. I designed the participant-facing survey flow and front end and deployed the Node.js prototype. Presented to NC DHHS leadership, leading to a proposed UNC–NC DHHS collaboration to develop and validate it further.',
-    tags: ['Node.js', 'Vercel', 'Predictive Modeling', 'Most Creative Solution'],
+    tags: ['Node.js', 'Vercel', 'Predictive Modeling'],
     date: 'Spring 2026 — Present',
     association: 'UNC Gillings AI & Public Health Datathon',
+    award: 'Most Creative Solution',
+    url: 'https://gillings-datathon.vercel.app',
+    github: 'https://github.com/liampwl/gillings-datathon',
   },
   {
     title: 'Bridging the Divide',
@@ -29,11 +36,13 @@ export const projects: ProjectEntry[] = [
     tags: ['Python', 'NLP', 'BERTopic', 'Policy Analysis'],
     date: 'Feb 2024 — Mar 2025',
     association: 'Duke Kunshan University',
+    github: 'https://github.com/liampwl/signature-work',
   },
   {
     title: 'CliniCrush',
     description: 'Full-stack clinical trial matching platform built with React and Flask, featuring a custom eligibility algorithm querying 1,000+ trials from ClinicalTrials.gov. Built and deployed in 24 hours during HackDKU 2025.',
-    tags: ['React', 'Flask', 'Healthcare', '1st Place — HackDKU 2025'],
+    tags: ['React', 'Flask', 'Healthcare'],
     date: 'Apr 2025',
+    award: '1st Place, HackDKU 2025',
   },
 ];

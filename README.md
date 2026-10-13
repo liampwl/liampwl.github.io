@@ -17,6 +17,7 @@ This site serves as a hub for my professional experience, selected projects, and
 | Styling     | Vanilla CSS (custom properties)     |
 | Hosting     | GitHub Pages (static output)        |
 | Images      | `astro:assets` + Sharp (WebP)       |
+| 3D          | three.js (rally mode only, lazy-loaded) |
 
 ## Project Structure
 
@@ -25,7 +26,8 @@ src/
 ├── components/     # Astro components (Hero, Nav, Projects, etc.)
 ├── data/           # TypeScript data files for experience, projects, and socials
 ├── layouts/        # Base HTML layout
-├── pages/          # Route entry points
+├── pages/          # Route entry points (index, rally, 404)
+├── scripts/        # Rally mode: the Set Up turntable and the drivable stage (three.js)
 └── styles/         # Global CSS and theme tokens
 public/             # Static assets (favicon, resume, CNAME)
 ```
