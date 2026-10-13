@@ -19,12 +19,14 @@ const stages = [
     short: 'Water Institute', banner: ['rally', 'carolina'], bannerColor: '#2f5f8a',
     region: 'usEast', country: 'u', lat: 35.91, lon: -79.05,
     weather: 'Cloudy', temp: 16, surfaces: 'Webinars, WordPress, Mailchimp',
+    drive: { surface: 'clay', scenery: 'pines', seed: 1, hills: 6 },
     ...byOrg('The Water Institute'),
   },
   {
     short: 'Hanoi Medical Univ.', banner: ['rally', 'vietnam'], bannerColor: '#8a2f2a',
     region: 'eastAsia', country: 'v', lat: 21.03, lon: 105.85,
     weather: 'Rain', temp: 31, surfaces: 'R, REDCap, Stata',
+    drive: { surface: 'tarmac', scenery: 'paddies', seed: 2, hills: 0.3 },
     ...byOrg('Center for Research'),
     organization: 'CREATA-H, Hanoi Medical University',
   },
@@ -32,24 +34,28 @@ const stages = [
     short: 'FHI 360', banner: ['rally', 'durham'], bannerColor: '#3c6b3f',
     region: 'usEast', country: 'u', lat: 35.99, lon: -78.9,
     weather: 'Bright', temp: 26, surfaces: 'Microlearning, Campaigns',
+    drive: { surface: 'tarmac', scenery: 'hardwoods', seed: 3, hills: 4 },
     ...byOrg('FHI 360'),
   },
   {
     short: 'USAID', banner: ['rally', 'capital'], bannerColor: '#2b3a6b',
     region: 'usEast', country: 'u', lat: 38.9, lon: -77.04,
     weather: 'Bright', temp: 27, surfaces: 'Subawards, COPs',
+    drive: { surface: 'tarmac', scenery: 'blossoms', seed: 4, hills: 3 },
     ...byOrg('USAID'),
   },
   {
     short: 'Pathfinders', banner: ['rally', 'blueridge'], bannerColor: '#5a4a2a',
     region: 'usEast', country: 'u', lat: 37.27, lon: -79.94,
     weather: 'Dry', temp: 13, surfaces: 'InDesign, Newsletters',
+    drive: { surface: 'gravel', scenery: 'autumn', seed: 5, hills: 14 },
     ...byOrg('Pathfinders'),
   },
   {
     short: 'Duke Kunshan Univ.', banner: ['rally', 'china'], bannerColor: '#7a2a44',
     region: 'eastAsia', country: 'c', lat: 31.39, lon: 120.98,
     weather: 'Drizzle', temp: 16, surfaces: 'Python, BERTopic, Mandarin',
+    drive: { surface: 'tarmac', scenery: 'canals', seed: 6, hills: 1 },
     organization: 'Duke Kunshan University',
     role: 'B.S. Global Health & Public Policy (with a B.A. from Duke)',
     dateRange: '2021 — 2025',
@@ -76,7 +82,7 @@ const records = [
   {
     short: 'Practicum Award', name: 'Practicum Excellence Award', org: 'UNC Gillings School of Global Public Health',
     year: 2026, icon: 'cup', stage: 1, fresh: true,
-    desc: 'For the Hanoi practicum: an interrupted time series over seven years of clinic records, estimating ~750 person-years of PrEP coverage lost after the 2025 PEPFAR/CDC funding transition.',
+    desc: 'For the Hanoi practicum: an interrupted time series over seven years of clinic records. After free PrEP medication ran out in 2025, new PrEP starts in July were 69% below the model\'s counterfactual.',
   },
   {
     short: 'Datathon Award', name: 'Most Creative Solution', org: 'UNC Gillings AI & Public Health Datathon',
@@ -117,7 +123,7 @@ const records = [
         <svg class="menu-track" id="menu-track" viewBox="0 0 640 480" aria-hidden="true"></svg>
         <div class="menu-row-wrap"><div class="menu-row" id="menu-row"></div></div>
         <div class="menu-hint">Use the cursor keys to make your selection, press return to confirm.</div>
-        <div class="menu-build">LPRALLY2 Build 2 (Oct 13 2026)</div>
+        <div class="menu-build">LPRALLY2 Build 3 (Oct 13 2026)</div>
       </section>
 
       <!-- Records: awards as silverware -->
@@ -158,7 +164,7 @@ const records = [
         <nav class="tabs" aria-label="Service area">
           <button data-tab="info">Information</button>
           <button data-tab="setup">Set Up</button>
-          <a href="/resume.pdf">Race</a>
+          <button data-tab="race">Race</button>
           <button data-tab="quit">Quit</button>
         </nav>
         <div class="player">Player 1 <span>liam</span></div>
@@ -212,8 +218,59 @@ const records = [
         </div>
 
         <div class="foot">
-          <span><i>↵</i> Select <i>Esc</i> Back</span>
+          <span><i>↵</i> Race stage <i>Esc</i> Back</span>
           <span><i>Q</i><i>E</i> Change tab</span>
+        </div>
+      </section>
+
+      <!-- Loading: stage card while the stage is generated -->
+      <section class="scr scr-loading" data-screen="loading" hidden>
+        <div class="tabs"><span class="on">Loading</span></div>
+        <div class="player">Player 1 <span>liam</span></div>
+        <canvas class="banner load-banner" id="load-banner" width="96" height="22"></canvas>
+        <p class="load-title" id="load-title"></p>
+        <div class="load-facts" id="load-facts"></div>
+        <canvas class="load-map" id="load-map" width="180" height="180"></canvas>
+        <p class="load-tip"><strong>Tip</strong> <span id="load-tip"></span></p>
+        <div class="load-track"><div class="load-bar" id="load-bar"></div></div>
+      </section>
+
+      <!-- Race: the stage itself -->
+      <section class="scr scr-race" data-screen="race" hidden>
+        <canvas class="stage-gl" id="stage-gl" width="640" height="480"></canvas>
+        <canvas class="stage-hud" id="stage-hud" width="640" height="480"></canvas>
+        <div class="touch" id="touch" hidden>
+          <button data-k="left" aria-label="Steer left">◀</button>
+          <button data-k="right" aria-label="Steer right">▶</button>
+          <button data-k="hand" aria-label="Handbrake">HB</button>
+          <button data-k="brake" aria-label="Brake">Brake</button>
+          <button data-k="gas" aria-label="Accelerate">Gas</button>
+          <button data-k="pause" aria-label="Pause">II</button>
+        </div>
+        <div class="stage-pause" id="stage-pause" hidden>
+          <div class="pause-title">Paused</div>
+          <ol class="list" id="pause-list"></ol>
+        </div>
+      </section>
+
+      <!-- Results: the stage times -->
+      <section class="scr scr-results" data-screen="results" hidden>
+        <div class="tabs"><span class="on">Stage Results</span></div>
+        <div class="player">Player 1 <span>liam</span></div>
+        <p class="results-title" id="results-title"></p>
+        <p class="results-record" id="results-record" hidden>New stage record</p>
+        <table class="results-table">
+          <thead><tr><th>Pos</th><th>Driver</th><th>Car</th><th>Time</th><th>Diff</th></tr></thead>
+          <tbody id="results-body"></tbody>
+        </table>
+        <div class="col results-col">
+          <div class="tr-title">Stage Summary</div>
+          <p class="results-stats" id="results-stats"></p>
+          <ol class="list" id="results-list"></ol>
+        </div>
+        <div class="foot">
+          <span><i>↵</i> Select <i>R</i> Retry</span>
+          <span><i>Esc</i> Service area</span>
         </div>
       </section>
     </div>
@@ -239,6 +296,16 @@ const records = [
       } catch (err) {
         console.warn('Rally car fell back to 2D:', err);
         document.dispatchEvent(new CustomEvent('rally:car-fallback'));
+      }
+    });
+
+    document.addEventListener('rally:race', async (e) => {
+      try {
+        const { runStage } = await import('../scripts/rally-stage');
+        await runStage((e as CustomEvent).detail);
+      } catch (err) {
+        console.warn('Stage failed to load:', err);
+        document.dispatchEvent(new CustomEvent('rally:race-exit', { detail: (e as CustomEvent).detail.index }));
       }
     });
   </script>
@@ -444,6 +511,7 @@ const records = [
       let currentTab = 'info';
       function tab(name) {
         if (name === 'quit') { show('menu'); return; }
+        if (name === 'race') { race(stageIdx); return; }
         currentTab = name;
         if (name === 'setup') document.dispatchEvent(new CustomEvent('rally:setup'));
         document.querySelectorAll('.tabs [data-tab]').forEach((b) => b.classList.toggle('on', b.dataset.tab === name));
@@ -506,8 +574,8 @@ const records = [
         weatherCells[name] = d;
       });
 
-      function drawBanner(st) {
-        const c = $('#banner'), ctx = c.getContext('2d');
+      function drawBanner(st, c = $('#banner')) {
+        const ctx = c.getContext('2d');
         ctx.fillStyle = st.bannerColor;
         ctx.fillRect(0, 0, 96, 22);
         // dithered noise, like a compressed texture
@@ -647,6 +715,36 @@ const records = [
       recGo.addEventListener('click', goToRecordStage);
       $('#rec-quit').addEventListener('click', () => show('menu'));
 
+      // Race: the stage module takes over from the loading screen and hands
+      // back with rally:race-exit
+      const SURFACE_NAMES = { tarmac: 'Tarmac', gravel: 'Gravel', clay: 'Red clay' };
+      function race(i) {
+        const st = stages[i];
+        drawBanner(st, $('#load-banner'));
+        $('#load-title').textContent = `SS0${i + 1}  ${st.short}`;
+        const wet = /Rain|Drizzle/.test(st.weather) && st.drive.surface === 'tarmac' ? 'Wet ' : '';
+        $('#load-facts').innerHTML = '';
+        [['Location', st.location], ['Weather', `${st.weather}, ${st.temp}°c`], ['Surface', wet + SURFACE_NAMES[st.drive.surface].toLowerCase()]].forEach(([k, v], j) => {
+          const d = document.createElement('div');
+          d.textContent = `${k}: ${j === 2 ? v.charAt(0).toUpperCase() + v.slice(1) : v}`;
+          $('#load-facts').appendChild(d);
+        });
+        $('#load-bar').style.width = '0%';
+        show('loading');
+        document.dispatchEvent(new CustomEvent('rally:race', {
+          detail: {
+            index: i, code: `SS0${i + 1}`, short: st.short, banner: st.banner, bannerColor: st.bannerColor,
+            weather: st.weather, temp: st.temp, drive: st.drive,
+          },
+        }));
+      }
+      document.addEventListener('rally:show', (e) => show(e.detail));
+      document.addEventListener('rally:race-exit', (e) => {
+        show('service');
+        tab('info');
+        selectStage(e.detail);
+      });
+
       selectStage(0);
       selectSkill(0);
       selectRecord(0);
@@ -655,6 +753,7 @@ const records = [
       /* ---------- keyboard ---------- */
       document.addEventListener('keydown', (e) => {
         const k = e.key;
+        if (screen === 'loading' || screen === 'race' || screen === 'results') return;
         if (screen === 'menu') {
           if (k === 'ArrowRight' || k === 'ArrowDown') { e.preventDefault(); menuSelect(menuIdx + 1); }
           else if (k === 'ArrowLeft' || k === 'ArrowUp') { e.preventDefault(); menuSelect(menuIdx - 1); }
@@ -670,6 +769,7 @@ const records = [
           return;
         }
         if (k === 'q' || k === 'e' || k === 'Q' || k === 'E') { tab(currentTab === 'info' ? 'setup' : 'info'); return; }
+        if (k === 'Enter' && !(e.target instanceof HTMLButtonElement)) { e.preventDefault(); race(stageIdx); return; }
         const step = k === 'ArrowDown' ? 1 : k === 'ArrowUp' ? -1 : 0;
         if (!step) return;
         e.preventDefault();
@@ -1344,6 +1444,242 @@ const records = [
     display: none;
   }
 
+  /* Loading */
+  .scr-loading,
+  .scr-results {
+    background: var(--bg);
+  }
+
+  .load-banner {
+    position: absolute;
+    left: 30px;
+    top: 66px;
+    width: 288px;
+    height: 66px;
+  }
+
+  .load-title {
+    position: absolute;
+    left: 30px;
+    top: 146px;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    color: var(--light);
+    white-space: pre;
+  }
+
+  .load-facts {
+    position: absolute;
+    left: 30px;
+    top: 180px;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 16px;
+  }
+
+  .load-map {
+    position: absolute;
+    left: 412px;
+    top: 66px;
+    width: 200px;
+    height: 200px;
+    background: #7f8887;
+    border: 1px solid rgba(0, 0, 0, 0.3);
+  }
+
+  .load-tip {
+    position: absolute;
+    left: 30px;
+    top: 300px;
+    width: 360px;
+    font-size: 12px;
+    line-height: 15px;
+    font-weight: 500;
+  }
+
+  .load-tip strong {
+    display: block;
+    color: var(--light);
+    margin-bottom: 3px;
+  }
+
+  .load-track {
+    position: absolute;
+    left: 30px;
+    right: 28px;
+    top: 428px;
+    height: 11px;
+    background: #6c7576;
+    border: 1px solid #6c7576;
+  }
+
+  .load-bar {
+    height: 100%;
+    width: 0;
+    background: #e3e8c2;
+    transition: width 0.15s linear;
+  }
+
+  /* Race */
+  .scr-race {
+    background: #000;
+  }
+
+  .stage-gl,
+  .stage-hud {
+    position: absolute;
+    inset: 0;
+    width: 640px;
+    height: 480px;
+  }
+
+  .stage-hud {
+    pointer-events: none;
+  }
+
+  .touch {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .touch[hidden],
+  .stage-pause[hidden],
+  .results-record[hidden] {
+    display: none;
+  }
+
+  .cmr .touch button {
+    position: absolute;
+    pointer-events: auto;
+    touch-action: none;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--light);
+    background: rgba(29, 33, 34, 0.35);
+    border: 1px solid rgba(242, 244, 238, 0.55);
+  }
+
+  .cmr .touch button.on {
+    background: rgba(242, 244, 238, 0.35);
+  }
+
+  .touch [data-k='left'] { left: 14px; top: 392px; width: 68px; height: 72px; }
+  .touch [data-k='right'] { left: 90px; top: 392px; width: 68px; height: 72px; }
+  .touch [data-k='hand'] { left: 444px; top: 236px; width: 56px; height: 44px; }
+  .touch [data-k='brake'] { left: 444px; top: 288px; width: 56px; height: 70px; }
+  .touch [data-k='gas'] { left: 508px; top: 236px; width: 72px; height: 122px; }
+  .touch [data-k='pause'] { left: 436px; top: 14px; width: 40px; height: 34px; }
+
+  .stage-pause {
+    position: absolute;
+    inset: 0;
+    background: rgba(20, 24, 24, 0.5);
+  }
+
+  .stage-pause::before {
+    content: '';
+    position: absolute;
+    left: 210px;
+    top: 150px;
+    width: 220px;
+    height: 150px;
+    background: var(--bg);
+    border: 1px solid rgba(0, 0, 0, 0.35);
+  }
+
+  .pause-title {
+    position: absolute;
+    left: 230px;
+    top: 166px;
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--light);
+  }
+
+  .stage-pause .list {
+    position: absolute;
+    left: 230px;
+    top: 196px;
+    width: 180px;
+  }
+
+  /* Results */
+  .results-title {
+    position: absolute;
+    left: 30px;
+    top: 62px;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--light);
+    white-space: pre;
+  }
+
+  .results-record {
+    position: absolute;
+    left: 300px;
+    top: 66px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #f3efa0;
+    background: var(--ink);
+    padding: 1px 5px;
+    animation: rec-blink 1.1s steps(1) infinite;
+  }
+
+  .results-table {
+    position: absolute;
+    left: 30px;
+    top: 100px;
+    width: 394px;
+    border-collapse: collapse;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  .results-table th {
+    text-align: left;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 0 6px 4px 0;
+    border-bottom: 2px solid var(--rule);
+  }
+
+  .results-table td {
+    padding: 4px 6px 3px 0;
+    border-bottom: 1px solid var(--rule);
+    white-space: nowrap;
+  }
+
+  .results-table td:nth-child(4),
+  .results-table td:nth-child(5),
+  .results-table th:nth-child(4),
+  .results-table th:nth-child(5) {
+    text-align: right;
+  }
+
+  .results-table tr.me td {
+    color: var(--light);
+  }
+
+  .results-col {
+    top: 66px;
+  }
+
+  .results-stats {
+    white-space: pre-line;
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 15px;
+    margin: 6px 0 14px;
+  }
+
   .rotate-hint {
     display: none;
     margin-top: 12px;
@@ -1369,7 +1705,8 @@ const records = [
       transition: none;
     }
 
-    .rec-new {
+    .rec-new,
+    .results-record {
       animation: none;
     }
   }

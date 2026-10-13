@@ -1,28 +1,17 @@
-// PS2-era turntable for the rally page's Set Up screen. The model is
-// pre-decimated (~11k tris, 128px textures); this renders it at the 640x480
-// screen's native resolution with no antialiasing, cheap per-material
-// lighting, a fake reflection cube, and a blob shadow.
+// PS2-era turntable for the rally page's Set Up screen. Renders the shared
+// Tiguan at the 640x480 screen's native resolution with no antialiasing,
+// cheap per-material lighting, a fake reflection cube, and a blob shadow.
 import {
   AmbientLight,
-  CanvasTexture,
-  Color,
-  CubeTexture,
   DirectionalLight,
   Group,
-  Mesh,
-  MeshLambertMaterial,
-  MeshPhongMaterial,
-  MixOperation,
   PerspectiveCamera,
-  PlaneGeometry,
   Scene,
   SRGBColorSpace,
   Vector3,
   WebGLRenderer,
-  type Material,
-  type MeshStandardMaterial,
 } from 'three';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { blobShadow, loadTiguan } from './rally-tiguan';
 
 // Hub centers in model space, measured from the source model
 const WHEELS: [number, number, number][] = [
@@ -31,84 +20,6 @@ const WHEELS: [number, number, number][] = [
   [-0.78, 0.35, 1.398],
   [0.78, 0.35, 1.398],
 ];
-
-function gradientFace(top: string, bottom: string) {
-  const c = document.createElement('canvas');
-  c.width = c.height = 16;
-  const g = c.getContext('2d')!;
-  const grad = g.createLinearGradient(0, 0, 0, 16);
-  grad.addColorStop(0, top);
-  grad.addColorStop(1, bottom);
-  g.fillStyle = grad;
-  g.fillRect(0, 0, 16, 16);
-  return c;
-}
-
-function fakeSky() {
-  const side = () => gradientFace('#e9f0f2', '#4a5352');
-  const tex = new CubeTexture([
-    side(), side(),
-    gradientFace('#ffffff', '#ffffff'),
-    gradientFace('#3b4241', '#3b4241'),
-    side(), side(),
-  ]);
-  tex.needsUpdate = true;
-  return tex;
-}
-
-function blobShadow(length: number, width: number) {
-  const c = document.createElement('canvas');
-  c.width = c.height = 32;
-  const g = c.getContext('2d')!;
-  const grad = g.createRadialGradient(16, 16, 2, 16, 16, 16);
-  grad.addColorStop(0, 'rgba(20,24,24,0.55)');
-  grad.addColorStop(1, 'rgba(20,24,24,0)');
-  g.fillStyle = grad;
-  g.fillRect(0, 0, 32, 32);
-  const mesh = new Mesh(
-    new PlaneGeometry(width * 1.5, length * 1.25),
-    new MeshLambertMaterial({ map: new CanvasTexture(c), transparent: true, depthWrite: false }),
-  );
-  mesh.rotation.x = -Math.PI / 2;
-  mesh.position.y = 0.005;
-  return mesh;
-}
-
-function ps2Material(src: MeshStandardMaterial, env: CubeTexture): Material {
-  const name = src.name ?? '';
-  const color = src.color?.clone() ?? new Color(1, 1, 1);
-  if (/Car Paint|Gris Ascot/i.test(name)) {
-    // Platinum white, the actual car's paint
-    return new MeshPhongMaterial({
-      color: new Color('#e4e1d8'), specular: 0x9a9890, shininess: 42,
-      envMap: env, combine: MixOperation, reflectivity: 0.18,
-    });
-  }
-  if (/Windows Ext|Black Glossy/i.test(name)) {
-    // Opaque tinted glass: there's no interior behind it
-    return new MeshPhongMaterial({
-      color: 0x0b1012, specular: 0x7c8688, shininess: 70,
-      envMap: env, combine: MixOperation, reflectivity: 0.12,
-    });
-  }
-  if (/Glass/i.test(name)) {
-    return new MeshLambertMaterial({
-      color: 0xdfe8ea, transparent: true, opacity: 0.25,
-      envMap: env, combine: MixOperation, reflectivity: 0.5, depthWrite: false,
-    });
-  }
-  const mat = new MeshLambertMaterial({ color, map: src.map ?? null });
-  if (/Reflector|Brushed|Chrome/i.test(name)) {
-    mat.envMap = env;
-    mat.combine = MixOperation;
-    mat.reflectivity = 0.3;
-  }
-  if (src.transparent) {
-    mat.transparent = true;
-    mat.opacity = src.opacity;
-  }
-  return mat;
-}
 
 export interface CarView {
   dispose(): void;
@@ -138,28 +49,11 @@ export async function mountCar(
   rim.position.set(-4, 2, -5);
   scene.add(rim);
 
-  const env = fakeSky();
-  const gltf = await new GLTFLoader().loadAsync('/rally/tiguan.glb');
-  gltf.scene.traverse((o) => {
-    const m = o as Mesh;
-    if (!m.isMesh) return;
-    m.geometry.deleteAttribute('normal');
-    m.geometry.computeVertexNormals();
-    const mats = Array.isArray(m.material) ? m.material : [m.material];
-    const next = mats.map((x) => {
-      const std = x as MeshStandardMaterial;
-      if (std.map) {
-        std.map.colorSpace = SRGBColorSpace;
-        std.map.anisotropy = 1;
-      }
-      return ps2Material(std, env);
-    });
-    m.material = Array.isArray(m.material) ? next : next[0];
-  });
+  const model = await loadTiguan();
 
   // The source model is centered on its wheelbase with the ground at y=0
   const turntable = new Group();
-  turntable.add(gltf.scene, blobShadow(4.7, 2.15));
+  turntable.add(model.clone(), blobShadow(4.7, 2.15));
   scene.add(turntable);
 
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
