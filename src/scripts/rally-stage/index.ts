@@ -31,14 +31,14 @@ export interface StageSpec {
 }
 
 const TIPS = [
-  'Pace notes run from 1, a hairpin, to 6, nearly flat. Trust the co-driver.',
   'Space pulls the handbrake. It is the fastest way around a hairpin and the slowest way around anything else.',
   'R puts the car back on the road. The marshals charge five seconds for it.',
   'C changes the camera. The bonnet view is for people with something to prove.',
   'Reviewer 2 is quick on every surface and never explains why.',
   'Wet tarmac has about three quarters of the grip of dry. Brake earlier than feels necessary.',
-  '"Don\'t cut" means there are rocks on the inside. The co-driver is not being dramatic.',
-  'Crests launch the car above about 75 km/h. Land it straight.',
+  'Lift off before a jump and land with the wheels straight.',
+  'Your best time on each stage is saved in this browser.',
+  'The real trophies are under Records on the main menu.',
   'A gamepad works: right trigger to go, left trigger to stop, A for the handbrake.',
   'M turns sound on, including the co-driver. Headphones are recommended in open offices.',
 ];
@@ -146,7 +146,8 @@ export async function runStage(spec: StageSpec) {
   const session = new Session(spec);
   try {
     await session.load();
-    session.begin();
+    if (await session.waitForStart()) session.begin();
+    else session.exit();
   } catch (err) {
     console.error('Stage failed to start:', err);
     session.exit();
@@ -286,6 +287,53 @@ class Session {
     this.reset();
     renderer.compile(this.world.scene, this.camera);
     progress(1);
+  }
+
+  // Hold on the loading card until the player is ready, as the original did,
+  // so there is time to read the stage and the pace-note key
+  waitForStart(): Promise<boolean> {
+    if (bot) return Promise.resolve(true);
+    const coarse = window.matchMedia('(pointer: coarse)').matches;
+    $('#load-track').hidden = true;
+    const ready = $('#load-ready');
+    ready.textContent = coarse ? 'Tap to start' : 'Press ↵ to start';
+    ready.hidden = false;
+    const screen = $('[data-screen="loading"]');
+    return new Promise((resolve) => {
+      let raf = 0;
+      const done = (go: boolean) => {
+        window.removeEventListener('keydown', onKey);
+        screen.removeEventListener('click', onClick);
+        cancelAnimationFrame(raf);
+        resolve(go);
+      };
+      const onKey = (e: KeyboardEvent) => {
+        if (e.repeat) return;
+        if (e.code === 'Enter' || e.code === 'Space') {
+          e.preventDefault();
+          done(true);
+        } else if (e.code === 'Escape') done(false);
+      };
+      const onClick = () => done(true);
+      const held = new Set<number>();
+      const poll = () => {
+        const p = Array.from(navigator.getGamepads?.() ?? []).find((x) => x && x.connected);
+        if (p) {
+          for (const i of [0, 9]) {
+            if (p.buttons[i]?.pressed && !held.has(i)) return done(true);
+            if (!p.buttons[i]?.pressed) held.delete(i);
+          }
+          if (p.buttons[1]?.pressed) return done(false);
+        }
+        raf = requestAnimationFrame(poll);
+      };
+      // Ignore a button that was already down when the card appeared
+      const p0 = Array.from(navigator.getGamepads?.() ?? []).find((x) => x && x.connected);
+      [0, 9].forEach((i) => p0?.buttons[i]?.pressed && held.add(i));
+      window.addEventListener('keydown', onKey);
+      screen.addEventListener('click', onClick);
+      raf = requestAnimationFrame(poll);
+    });
   }
 
   private reset() {

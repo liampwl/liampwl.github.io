@@ -76,7 +76,27 @@ const ICON: Record<number, { r: number; sweep: number }> = {
   4: { r: 14, sweep: 78 }, 5: { r: 19, sweep: 56 }, 6: { r: 28, sweep: 36 },
 };
 
-function noteIcon(g: CanvasRenderingContext2D, n: Note, cx: number, cy: number, scale: number) {
+// Corner numbers run 1 (hairpin) to 6 (nearly flat); colour them so the
+// severity reads before the number does
+export function gradeColor(grade: number) {
+  return grade <= 2 ? '#ff8f6b' : grade <= 4 ? '#f3d36a' : '#a8e0a0';
+}
+
+// The short form of a note, without modifiers: "right 2", "jump"
+function head(n: Note) {
+  if (n.kind !== 'corner') return n.kind === 'jump' ? 'jump' : 'crest';
+  const side = n.dir === 1 ? 'left' : 'right';
+  return n.grade === 1 ? `hairpin ${side}` : `${side} ${n.grade}`;
+}
+
+// What follows the current note, in plain words
+export function followText(n: Note, next: Note) {
+  if (n.link === 'into') return `${head(next)} straight after`;
+  if (n.link === 'and') return `then ${head(next)}`;
+  return `${head(next)} in ${n.link} m`;
+}
+
+export function noteIcon(g: CanvasRenderingContext2D, n: Note, cx: number, cy: number, scale: number) {
   g.save();
   g.translate(cx, cy);
   g.scale(scale, scale);
@@ -134,7 +154,7 @@ function noteIcon(g: CanvasRenderingContext2D, n: Note, cx: number, cy: number, 
     g.strokeStyle = INK;
     const tx = n.dir === 1 ? 12 : -12;
     g.strokeText(String(n.grade), tx, 14);
-    g.fillStyle = '#f3efa0';
+    g.fillStyle = gradeColor(n.grade);
     g.fillText(String(n.grade), tx, 14);
   }
   g.restore();
@@ -194,10 +214,7 @@ export function drawHud(g: CanvasRenderingContext2D, s: HudState) {
     }
     const call = s.note.call.toUpperCase();
     outlined(g, call, 320, 88, 13, LIGHT, 800);
-    if (s.next && s.note.link) {
-      const link = /^\d/.test(s.note.link) ? s.note.link : s.note.link.toUpperCase();
-      outlined(g, `${link} ${s.next.call.toUpperCase()}`, 320, 103, 10, '#cfd8d4', 700);
-    }
+    if (s.next && s.note.link) outlined(g, followText(s.note, s.next).toUpperCase(), 320, 103, 10, '#cfd8d4', 700);
     g.restore();
   }
 

@@ -231,8 +231,30 @@ const records = [
         <p class="load-title" id="load-title"></p>
         <div class="load-facts" id="load-facts"></div>
         <canvas class="load-map" id="load-map" width="180" height="180"></canvas>
+        <div class="load-key">
+          <p class="load-key-title">Reading the pace notes</p>
+          <dl>
+            <dt>Left 4</dt>
+            <dd>A left corner. Sharpness runs <span class="g-sharp">1 2</span> <span class="g-mid">3 4</span> <span class="g-easy">5 6</span>, hairpin to nearly flat.</dd>
+            <dt>Tightens</dt>
+            <dd>Gets sharper partway round. <b>Opens</b> eases off.</dd>
+            <dt>Long</dt>
+            <dd>Keeps turning for longer than it looks.</dd>
+            <dt>Don't cut</dt>
+            <dd>Rocks on the inside. Stay wide.</dd>
+            <dt>Jump</dt>
+            <dd>A crest that launches the car above about 75 km/h.</dd>
+            <dt>In 100 m</dt>
+            <dd>Distance to the next call. <b>Straight after</b> means no gap.</dd>
+          </dl>
+        </div>
         <p class="load-tip"><strong>Tip</strong> <span id="load-tip"></span></p>
-        <div class="load-track"><div class="load-bar" id="load-bar"></div></div>
+        <div class="load-track" id="load-track"><div class="load-bar" id="load-bar"></div></div>
+        <p class="load-ready" id="load-ready" hidden>Press ↵ to start</p>
+        <div class="foot">
+          <span><i>↵</i> Start <i>Esc</i> Back</span>
+          <span></span>
+        </div>
       </section>
 
       <!-- Race: the stage itself -->
@@ -730,6 +752,8 @@ const records = [
           $('#load-facts').appendChild(d);
         });
         $('#load-bar').style.width = '0%';
+        $('#load-track').hidden = false;
+        $('#load-ready').hidden = true;
         show('loading');
         document.dispatchEvent(new CustomEvent('rally:race', {
           detail: {
@@ -1488,14 +1512,81 @@ const records = [
     border: 1px solid rgba(0, 0, 0, 0.3);
   }
 
-  .load-tip {
+  .load-key {
     position: absolute;
     left: 30px;
-    top: 300px;
-    width: 360px;
+    top: 272px;
+    width: 362px;
+  }
+
+  .load-key-title {
     font-size: 12px;
-    line-height: 15px;
+    font-weight: 700;
+    color: var(--light);
+    margin-bottom: 4px;
+    padding-bottom: 3px;
+    border-bottom: 2px solid var(--rule);
+  }
+
+  .load-key dl {
+    display: grid;
+    grid-template-columns: 72px 1fr;
+    font-size: 10.5px;
+    line-height: 13px;
+  }
+
+  .load-key dt,
+  .load-key dd {
+    padding: 2px 0 1px;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .load-key dt {
+    font-weight: 700;
+    font-style: italic;
+  }
+
+  .load-key dd {
     font-weight: 500;
+  }
+
+  .load-key .g-sharp,
+  .load-key .g-mid,
+  .load-key .g-easy {
+    font-weight: 800;
+    padding: 0 2px;
+    background: var(--ink);
+  }
+
+  .load-key .g-sharp { color: #ff8f6b; }
+  .load-key .g-mid { color: #f3d36a; }
+  .load-key .g-easy { color: #a8e0a0; }
+
+  .load-tip {
+    position: absolute;
+    left: 412px;
+    top: 280px;
+    width: 200px;
+    font-size: 11px;
+    line-height: 14px;
+    font-weight: 500;
+  }
+
+  .load-ready {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 420px;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--light);
+    animation: rec-blink 1.1s steps(1) infinite;
+  }
+
+  .load-ready[hidden],
+  .load-track[hidden] {
+    display: none;
   }
 
   .load-tip strong {
@@ -1706,7 +1797,8 @@ const records = [
     }
 
     .rec-new,
-    .results-record {
+    .results-record,
+    .load-ready {
       animation: none;
     }
   }
