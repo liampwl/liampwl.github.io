@@ -16,9 +16,14 @@ import headshot from '../assets/headshot.jpg';
         I'm a second-year MPH candidate focused on global health implementation and
         health systems. My work has centered on HIV/AIDS and WASH, with experience
         spanning USAID's Office of HIV/AIDS, FHI&nbsp;360, and the Water Institute at UNC.
-        This summer I was in Hanoi, studying how the 2025 PEPFAR funding transition
-        disrupted HIV prevention services at a clinic affiliated with Hanoi Medical University.
-        That work received a 2026 Practicum Excellence Award from Gillings.
+        In summer 2026 I was in Hanoi, <a href="/hanoi/">studying how the 2025 PEPFAR funding
+        withdrawal disrupted HIV prevention services</a> at a clinic affiliated with Hanoi
+        Medical University. That work received a 2026 Practicum Excellence Award from Gillings.
+      </p>
+
+      <p class="intro-next">
+        I finish my MPH in May 2027 and am looking for my next role in global
+        health. <a href="mailto:william.powell@unc.edu">Get in touch</a>.
       </p>
 
       <p class="intro-links">
@@ -86,8 +91,25 @@ import headshot from '../assets/headshot.jpg';
   .intro-bio {
     color: var(--color-text-secondary);
     line-height: var(--leading-relaxed);
+    margin-bottom: 1.25rem;
+    max-width: 56ch;
+  }
+
+  .intro-bio a {
+    color: inherit;
+  }
+
+  .intro-bio a:hover {
+    color: var(--color-accent);
+  }
+
+  .intro-next {
+    font-weight: 500;
+    line-height: var(--leading-relaxed);
     margin-bottom: 2rem;
     max-width: 56ch;
+    padding-left: 1rem;
+    border-left: 2px solid var(--color-accent);
   }
 
   .intro-links {

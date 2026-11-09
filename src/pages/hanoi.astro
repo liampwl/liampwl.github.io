@@ -1,0 +1,301 @@
+---
+import { Image } from 'astro:assets';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import posterImage from '../assets/hanoi-poster.png';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+
+import '../styles/theme.css';
+import '../styles/global.css';
+
+const blogPost =
+  'https://tarheels.live/globalhealth/2026/10/01/serious-work-silly-coffee-wrapping-up-in-hanoi/';
+
+const posterPdf = '/posters/hanoi-prep-practicum-day-2026.pdf';
+
+const facts = [
+  ['Host', 'Center for Research and Training on Substance Use-HIV (CREATA-H), Hanoi Medical University'],
+  ['Site', 'Sexual Health Promotion Clinic, Hanoi'],
+  ['When', 'June – July 2026'],
+  ['Design', 'Negative-binomial interrupted time series'],
+  ['Data', 'Seven years of clinic records · 86 monthly observations · ~11,000 clients'],
+  ['Tools', 'R, REDCap, Stata'],
+];
+---
+
+<BaseLayout
+  title="PEPFAR funding withdrawal and PrEP services in Hanoi — Liam Powell"
+  description="MPH practicum at Hanoi Medical University: an interrupted time series analysis of seven years of clinic records, estimating what the 2025 PEPFAR/CDC funding withdrawal did to PrEP services."
+>
+  <Nav />
+
+  <main>
+    <article class="study">
+      <div class="container">
+        <header class="study-head">
+          <p class="study-kicker">MPH practicum · Hanoi, Vietnam · Summer 2026</p>
+          <h1 class="study-title">
+            Measuring what the PEPFAR funding withdrawal did to PrEP services at a Hanoi clinic
+          </h1>
+          <p class="study-award">Practicum Excellence Award, 2026 · UNC Gillings</p>
+          <p class="study-lede">
+            In 2025, PEPFAR/CDC funding for PrEP, the daily medication that prevents HIV, was
+            withdrawn from a sexual health clinic in Hanoi. The staff were too busy keeping the
+            program running to measure what changed. For my practicum I designed and ran the
+            analysis that did.
+          </p>
+        </header>
+
+        <dl class="study-facts">
+          {facts.map(([term, detail]) => (
+            <div class="fact">
+              <dt>{term}</dt>
+              <dd>{detail}</dd>
+            </div>
+          ))}
+        </dl>
+
+        <div class="study-body">
+          <h2>The question</h2>
+          <p>
+            The team at CREATA-H handed me a research question rather than a task list: what did
+            the funding withdrawal do to PrEP initiation, medication dispensing, and service use
+            at the clinic, which serves a population that is predominantly men who have sex with
+            men? The study design was mine to work out.
+          </p>
+
+          <h2>Starting from the clinic's own numbers</h2>
+          <p>
+            The data were seven years of clinic records exported from REDCap: 86 monthly
+            observations covering about 11,000 clients. The clinic already reported monthly
+            counts from this database using its own Stata definitions. Before modeling anything,
+            I rebuilt those definitions in R until my pipeline reproduced the clinic's internal
+            monthly counts exactly. The analysis then started from figures the clinic recognized
+            as its own.
+          </p>
+
+          <h2>The design</h2>
+          <p>
+            I used a negative-binomial interrupted time series: a count model fitted to the
+            monthly series, with the funding withdrawal as the interruption, so that what
+            happened afterward can be compared with what the earlier trend would have predicted.
+          </p>
+          <p>
+            One complication shaped the analysis. A research cohort was running at the clinic
+            over the same period, and left in the counts it would have masked the funding
+            effect. I isolated the funding effect from that cohort.
+          </p>
+
+          <h2>Beyond the dataset</h2>
+          <p>
+            Alongside the records I had key-informant conversations with clinicians and program
+            staff about how the withdrawal had affected the people who rely on the clinic and how
+            the clinic itself had adapted. Those conversations shaped how I read the numbers.
+          </p>
+
+          <h2>What the clinic received</h2>
+          <ul>
+            <li>A results memo.</li>
+            <li>
+              A reproducible analysis repository with a data dictionary and automated checks
+              against the clinic's own reported counts, documented so that someone else can add
+              new records and rerun it.
+            </li>
+            <li>
+              A share-out of the findings to clinic leadership, CDC, and CREATA-H investigators.
+            </li>
+          </ul>
+
+          <blockquote class="study-quote">
+            <p>
+              “It’s easy to write something that runs once, on my data, in July. It’s harder to
+              make something that someone else can pick up six months from now, add new records
+              to, and adapt when the questions change.”
+            </p>
+            <footer>
+              From <a href={blogPost} target="_blank" rel="noopener noreferrer">my post on the
+              Gillings Global Health blog</a>, October 2026
+            </footer>
+          </blockquote>
+
+          <h2>Results</h2>
+          <p>
+            The estimates, figures, and limitations are on my poster for MPH Practicum Day 2026
+            at UNC Gillings. <a href={posterPdf}>Open the poster (PDF, 2.9 MB)</a>,
+            or <a href="mailto:william.powell@unc.edu">email me</a> if you'd like to talk
+            through the findings or the methods.
+          </p>
+        </div>
+
+        <figure class="study-poster">
+          <a href={posterPdf}>
+            <Image
+              src={posterImage}
+              alt="Poster titled “When free PrEP medication ran out, visits fell by nearly two-thirds: PrEP use at Hanoi Medical University's Sexual Health Promotion clinic, 2019–2026”, with headline estimates, a chart of monthly PrEP service visits, and background, methods, results, and impact sections."
+              widths={[640, 1280]}
+              sizes="(min-width: 700px) 640px, 100vw"
+              format="webp"
+              quality={82}
+              loading="lazy"
+            />
+          </a>
+          <figcaption>Poster for MPH Practicum Day 2026, UNC Gillings. Select it to open the full-size PDF.</figcaption>
+        </figure>
+
+        <p class="study-back"><a href="/#projects">← All research &amp; projects</a></p>
+      </div>
+    </article>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<style>
+  .study {
+    padding: 4.5rem 0 1rem;
+  }
+
+  .study-head,
+  .study-body {
+    max-width: 40rem;
+  }
+
+  .study-kicker {
+    font-size: var(--text-micro);
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-text-tertiary);
+    margin-bottom: 1.5rem;
+  }
+
+  .study-title {
+    font-size: var(--text-display);
+    letter-spacing: -0.01em;
+    margin-bottom: 1.25rem;
+    text-wrap: balance;
+  }
+
+  .study-award {
+    font-size: var(--text-micro);
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    margin-bottom: 1.5rem;
+  }
+
+  .study-lede {
+    font-family: var(--font-display);
+    font-size: var(--text-subhead);
+    line-height: 1.5;
+    color: var(--color-text-primary);
+  }
+
+  .study-facts {
+    display: grid;
+    gap: 0 3rem;
+    margin: 3rem 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  @media (min-width: 700px) {
+    .study-facts {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .fact {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    padding: 1rem 0;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .fact dt {
+    font-size: var(--text-micro);
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-text-tertiary);
+  }
+
+  .fact dd {
+    font-size: var(--text-small);
+    color: var(--color-text-primary);
+  }
+
+  .study-body h2 {
+    font-size: var(--text-heading);
+    margin: 2.75rem 0 0.9rem;
+  }
+
+  .study-body h2:first-child {
+    margin-top: 0;
+  }
+
+  .study-body p,
+  .study-body li {
+    color: var(--color-text-secondary);
+    line-height: var(--leading-relaxed);
+  }
+
+  .study-body p + p {
+    margin-top: 1.1rem;
+  }
+
+  .study-body ul {
+    padding-left: 1.2rem;
+  }
+
+  .study-body li + li {
+    margin-top: 0.5rem;
+  }
+
+  .study-quote {
+    margin: 2.75rem 0 0;
+    padding-left: 1.25rem;
+    border-left: 2px solid var(--color-accent);
+  }
+
+  .study-quote p {
+    font-family: var(--font-display);
+    font-size: var(--text-subhead);
+    font-style: italic;
+    line-height: 1.5;
+    color: var(--color-text-primary);
+  }
+
+  .study-quote footer {
+    font-size: var(--text-small);
+    color: var(--color-text-tertiary);
+    margin-top: 0.75rem;
+  }
+
+  .study-poster {
+    max-width: 40rem;
+    margin-top: 2rem;
+  }
+
+  .study-poster a {
+    display: block;
+  }
+
+  .study-poster :global(img) {
+    width: 100%;
+    height: auto;
+    border: 1px solid var(--color-rule);
+  }
+
+  .study-poster figcaption {
+    font-size: var(--text-micro);
+    color: var(--color-text-tertiary);
+    margin-top: 0.6rem;
+  }
+
+  .study-back {
+    font-size: var(--text-small);
+    margin-top: 3.5rem;
+  }
+</style>

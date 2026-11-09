@@ -8,27 +8,34 @@ export interface ProjectEntry {
   association?: string;
   award?: string;
   post?: string;
+  /** Internal write-up page, e.g. '/hanoi/' */
+  page?: string;
+  /** Poster PDF under public/ */
+  poster?: string;
 }
 
 export const projects: ProjectEntry[] = [
   {
-    title: 'PEPFAR Funding Transition and PrEP Services in Hanoi',
-    description: 'Interrupted time series analysis of seven years of records from a Hanoi sexual health clinic after free PrEP medication ran out in the 2025 PEPFAR/CDC funding transition. Fitted July 2025 counts were 64% below the model\'s counterfactual for visits, 67% for dispensing, and 69% for new PrEP starts, and the ratio of new starts to new HIV-negative testers fell from 83% to 39%. Delivered a findings memo, a reproducible analysis repository with an automated audit script, and the clinic database\'s first data dictionary.',
+    title: 'PEPFAR Funding Withdrawal and PrEP Services in Hanoi',
+    description: 'Negative-binomial interrupted time series analysis of seven years of records from a Hanoi sexual health clinic (86 monthly observations, ~11,000 clients), estimating the effect of the 2025 PEPFAR/CDC funding withdrawal on PrEP initiation, medication dispensing, and service use in an MSM-predominant population. Isolated the funding effect from a concurrent research cohort that would have masked it. Delivered a results memo, a reproducible analysis repository, and a share-out to clinic leadership, CDC, and CREATA-H investigators, informed by key-informant conversations with clinicians and program staff.',
     tags: ['R', 'REDCap', 'Interrupted Time Series', 'HIV Prevention'],
     date: 'Jun — Jul 2026',
     association: 'CREATA-H, Hanoi Medical University',
     award: 'Practicum Excellence Award, 2026',
+    page: '/hanoi/',
+    poster: '/posters/hanoi-prep-practicum-day-2026.pdf',
     post: 'https://tarheels.live/globalhealth/2026/10/01/serious-work-silly-coffee-wrapping-up-in-hanoi/',
   },
   {
     title: 'BRFSS Insights',
-    description: 'Diabetes risk estimation tool built on a logistic regression model of CDC BRFSS data. I designed the participant-facing survey flow and front end and deployed the Node.js prototype. Presented to NC DHHS leadership, leading to a proposed UNC–NC DHHS collaboration to develop and validate it further.',
+    description: 'Diabetes risk estimation tool built on a logistic regression model of CDC BRFSS data. I designed the participant-facing survey flow and front end and deployed the Node.js prototype. Presented to NC DHHS leadership, leading to a proposed UNC–NC DHHS collaboration to develop and validate it further. Accepted to present a poster on generative AI for people-centered public health tools at the 2026 NC Global Health Conference.',
     tags: ['Node.js', 'Vercel', 'Predictive Modeling'],
     date: 'Spring 2026 — Present',
     association: 'UNC Gillings AI & Public Health Datathon',
     award: 'Most Creative Solution',
     url: 'https://gillings-datathon.vercel.app',
     github: 'https://github.com/liampwl/gillings-datathon',
+    poster: '/posters/brfss-insights-ncghc-2026.pdf',
   },
   {
     title: 'Bridging the Divide',

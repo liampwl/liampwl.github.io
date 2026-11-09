@@ -17,16 +17,16 @@ export const experience: ExperienceEntry[] = [
   {
     organization: 'The Water Institute at UNC',
     role: 'Graduate Work-Study Student, Communities of Practice',
-    dateRange: 'Sep 2025 — Present',
+    dateRange: 'Sep 2025 — May 2026; Aug 2026 — Present',
     location: 'Chapel Hill, NC',
-    description: 'Coordinating webinar production for two global professional communities (1,000+ members across 50+ countries), from stakeholder outreach and communications campaigns to event logistics; increased average WASH in healthcare facilities webinar attendance by 50%. Helped launch the Circuit Riders Community of Practice, including washcircuitriders.org, a subscriber base grown from 0 to 297, and a bimonthly webinar series.',
+    description: 'Coordinating webinar production for two global communities of practice (~1,300 subscribers in 50+ countries), from speaker outreach and Mailchimp campaigns to Zoom logistics and recordings; increased average WASH in healthcare facilities webinar attendance by 50%. Helped launch the WASH Circuit Riders Community of Practice, including washcircuitriders.org, a subscriber list grown from 0 to 297, and a bimonthly webinar series. Rewrote both communities\' SOPs into AI-ready guides with tool-agnostic prompts, and refreshed their logos and slide templates.',
   },
   {
     organization: 'Center for Research and Training on Substance Use-HIV, Hanoi Medical University',
-    role: 'MPH Practicum Intern, Global Health',
+    role: 'MPH Practicum Intern, Sexual Health Promotion Clinic',
     dateRange: 'Jun — Jul 2026',
     location: 'Hanoi, Vietnam',
-    description: 'Designed and ran an interrupted time series analysis of seven years of clinic records on PrEP services before and after the 2025 PEPFAR/CDC funding transition. Built the R pipeline from raw REDCap exports, reconstructing the clinic\'s own Stata reporting definitions, and presented findings to clinic leadership and U.S. CDC staff in Hanoi.',
+    description: 'Designed and ran a negative-binomial interrupted time series analysis of seven years of clinic records (86 monthly observations, ~11,000 clients) to estimate the effect of the 2025 PEPFAR/CDC funding withdrawal on PrEP initiation, medication dispensing, and service use in an MSM-predominant population. Built the R pipeline from raw REDCap exports, reconstructing the clinic\'s own Stata reporting definitions to reproduce its internal monthly counts exactly, and shared the results with clinic leadership, CDC, and CREATA-H investigators.',
   },
   {
     organization: 'FHI 360',

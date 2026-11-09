@@ -1,16 +1,19 @@
 ---
 import ThemeToggle from './ThemeToggle.astro';
+
+// On the homepage the links scroll in place; on any other page they go back to it
+const base = Astro.url.pathname === '/' ? '' : '/';
 ---
 
 <header class="masthead">
   <div class="container masthead-inner">
-    <a href="#" class="masthead-name">Liam Powell</a>
+    <a href={base || '#'} class="masthead-name">Liam Powell</a>
 
     <nav class="masthead-links" aria-label="Site navigation">
-      <a href="#about">About</a>
-      <a href="#experience">Experience</a>
-      <a href="#projects">Projects</a>
-      <a href="#contact">Contact</a>
+      <a href={`${base}#about`}>About</a>
+      <a href={`${base}#experience`}>Experience</a>
+      <a href={`${base}#projects`}>Projects</a>
+      <a href={`${base}#contact`}>Contact</a>
       <ThemeToggle />
     </nav>
   </div>
