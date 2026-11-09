@@ -29,6 +29,7 @@ const stages = [
     drive: { surface: 'tarmac', scenery: 'paddies', seed: 2, hills: 0.3 },
     ...byOrg('Center for Research'),
     organization: 'CREATA-H, Hanoi Medical University',
+    links: [['Write-up', '/hanoi/'], ['Poster', '/posters/hanoi-prep-practicum-day-2026.pdf']],
   },
   {
     short: 'FHI 360', banner: ['rally', 'durham'], bannerColor: '#3c6b3f',
@@ -62,7 +63,21 @@ const stages = [
     location: 'Kunshan, China',
     description: 'Three years living and studying in China. Signature Work thesis used BERTopic topic modeling on 2,300+ USAID documents, finding disease-specific bilateral programming dominant under Trump and multilateral engagement and reproductive health expanding under Biden.',
   },
+  // Appended, not inserted in date order: stage codes (SS01…) key the saved
+  // best times and the `used` / `stage` indexes below
+  {
+    short: 'Graduate School', banner: ['rally', 'tarheel'], bannerColor: '#3f6f8f',
+    region: 'usEast', country: 'u', lat: 35.91, lon: -79.05,
+    weather: 'Dry', temp: 18, surfaces: 'Newsletters, Funding searches',
+    drive: { surface: 'gravel', scenery: 'hardwoods', seed: 7, hills: 9 },
+    ...byOrg('The Graduate School'),
+  },
 ];
+
+const lastStage = `SS0${stages.length}`;
+const buildDate = new Intl.DateTimeFormat('en-US', {
+  month: 'short', day: 'numeric', year: 'numeric', timeZone: 'America/New_York',
+}).format(new Date()).replace(',', '');
 
 // `used` holds indexes into stages; `last` is mm:yy, 'now' for ongoing, or null
 const skills = [
@@ -83,6 +98,7 @@ const records = [
     short: 'Practicum Award', name: 'Practicum Excellence Award', org: 'UNC Gillings School of Global Public Health',
     year: 2026, icon: 'cup', stage: 1, fresh: true,
     desc: 'For the Hanoi practicum: a negative-binomial interrupted time series over seven years of clinic records, estimating what the 2025 PEPFAR/CDC funding withdrawal did to PrEP services.',
+    links: [['Write-up', '/hanoi/'], ['Poster', '/posters/hanoi-prep-practicum-day-2026.pdf']],
   },
   {
     short: 'Emerging Leaders', name: 'Emerging Leaders in Global Health Cohort', org: 'NC Global Health Alliance',
@@ -93,6 +109,7 @@ const records = [
     short: 'Datathon Award', name: 'Most Creative Solution', org: 'UNC Gillings AI & Public Health Datathon',
     year: 2026, icon: 'rosette', stage: null,
     desc: 'BRFSS Insights, a diabetes risk estimation tool built on CDC BRFSS data. I designed the survey flow and front end; presenting it to NC DHHS leadership led to a proposed UNC–NC DHHS collaboration.',
+    links: [['Poster', '/posters/brfss-insights-ncghc-2026.pdf'], ['Live app', 'https://gillings-datathon.vercel.app']],
   },
   {
     short: 'HackDKU 1st', name: '1st Place, Healthcare/Biotech Track', org: 'HackDKU 2025, Duke Kunshan University',
@@ -128,7 +145,7 @@ const records = [
         <svg class="menu-track" id="menu-track" viewBox="0 0 640 480" aria-hidden="true"></svg>
         <div class="menu-row-wrap"><div class="menu-row" id="menu-row"></div></div>
         <div class="menu-hint">Use the cursor keys to make your selection, press return to confirm.</div>
-        <div class="menu-build">LPRALLY2 Build 3 (Oct 13 2026)</div>
+        <div class="menu-build">LPRALLY2 Build {buildDate}</div>
       </section>
 
       <!-- Records: awards as silverware -->
@@ -148,7 +165,7 @@ const records = [
         <p class="rec-name" id="rec-name"></p>
         <p class="rec-org" id="rec-org"></p>
         <div class="usebar rec-bar" id="rec-bar"></div>
-        <div class="usebar-labels rec-bar-labels"><span>SS01</span><span id="rec-bar-label"></span><span>SS06</span></div>
+        <div class="usebar-labels rec-bar-labels"><span>SS01</span><span id="rec-bar-label"></span><span>{lastStage}</span></div>
         <p class="setup-desc rec-desc" id="rec-desc"></p>
         <ol class="list rec-go-wrap"><li><button id="rec-go"></button></li></ol>
 
@@ -205,7 +222,7 @@ const records = [
           <div class="last-label">Last Used (mm:yy)</div>
           <div class="last-panel" id="last-used"></div>
           <div class="usebar" id="usebar"></div>
-          <div class="usebar-labels"><span>SS01</span><span>Used on stage</span><span>SS06</span></div>
+          <div class="usebar-labels"><span>SS01</span><span>Used on stage</span><span>{lastStage}</span></div>
           <p class="setup-desc" id="setup-desc"></p>
 
           <div class="col">
@@ -347,7 +364,10 @@ const records = [
       /* ---------- scale the 640x480 screen into the window ---------- */
       const cmr = $('#cmr');
       function fit() {
-        const s = Math.min(window.innerWidth / 640, window.innerHeight / 480);
+        // Measure the frame, not the window: on a phone the unscaled 640px screen
+        // widens window.innerWidth, and the scale then never shrinks to fit
+        const frame = cmr.parentElement;
+        const s = Math.min(frame.clientWidth / 640, frame.clientHeight / 480);
         cmr.style.transform = `scale(${s})`;
         cmr.parentElement.style.setProperty('--h', `${480 * s}px`);
       }
@@ -357,7 +377,10 @@ const records = [
       /* ---------- low-res rasterizer: draw small, display big ---------- */
       function raster(canvas, svg) {
         const img = new Image();
+        // Images decode out of order; only the most recent request may draw
+        canvas._latest = img;
         img.onload = () => {
+          if (canvas._latest !== img) return;
           const ctx = canvas.getContext('2d');
           ctx.clearRect(0, 0, canvas.width, canvas.height);
           ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
@@ -546,6 +569,24 @@ const records = [
       }
       document.querySelectorAll('.tabs [data-tab]').forEach((b) => b.addEventListener('click', () => tab(b.dataset.tab)));
 
+      // Description text followed by a row of links out to the main site
+      function setDesc(el, text, links) {
+        el.textContent = text;
+        if (!links) return;
+        const row = document.createElement('span');
+        row.className = 'desc-links';
+        links.forEach(([label, href]) => {
+          const a = document.createElement('a');
+          a.href = href;
+          a.target = '_blank';
+          a.rel = 'noopener';
+          a.textContent = label;
+          row.appendChild(a);
+        });
+        el.appendChild(row);
+      }
+      const onLink = (e) => e.target instanceof HTMLAnchorElement;
+
       function listRow(label, extra) {
         const li = document.createElement('li');
         const b = document.createElement('button');
@@ -649,7 +690,7 @@ const records = [
           $('#facts').appendChild(d);
         });
         $('#info-role').textContent = `${st.role} — ${st.organization}`;
-        $('#info-desc').textContent = st.description;
+        setDesc($('#info-desc'), st.description, st.links);
       }
 
       // Set Up: skills as car parts
@@ -725,7 +766,7 @@ const records = [
         $('#rec-new').hidden = !r.fresh;
         $('#rec-name').textContent = r.name;
         $('#rec-org').textContent = r.org;
-        $('#rec-desc').textContent = r.desc;
+        setDesc($('#rec-desc'), r.desc, r.links);
         Array.from($('#rec-bar').children).forEach((s, j) => s.classList.toggle('lit', j === r.stage));
         const onStage = r.stage !== null;
         $('#rec-bar-label').textContent = onStage ? 'Earned on stage' : 'Non-championship round';
@@ -792,13 +833,14 @@ const records = [
         }
         if (k === 'Escape') { show('menu'); return; }
         if (screen === 'records') {
+          if (k === 'Enter' && onLink(e)) return;
           if (k === 'Enter') { e.preventDefault(); goToRecordStage(); return; }
           const step = k === 'ArrowDown' ? 1 : k === 'ArrowUp' ? -1 : 0;
           if (step) { e.preventDefault(); selectRecord(recordIdx + step); }
           return;
         }
         if (k === 'q' || k === 'e' || k === 'Q' || k === 'E') { tab(currentTab === 'info' ? 'setup' : 'info'); return; }
-        if (k === 'Enter' && !(e.target instanceof HTMLButtonElement)) { e.preventDefault(); race(stageIdx); return; }
+        if (k === 'Enter' && !(e.target instanceof HTMLButtonElement) && !onLink(e)) { e.preventDefault(); race(stageIdx); return; }
         const step = k === 'ArrowDown' ? 1 : k === 'ArrowUp' ? -1 : 0;
         if (!step) return;
         e.preventDefault();
@@ -823,6 +865,7 @@ const records = [
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
   }
 
   .cmr {
@@ -1172,6 +1215,24 @@ const records = [
     font-weight: 700;
     color: var(--light);
     margin-bottom: 4px;
+  }
+
+  .cmr .desc-links {
+    display: flex;
+    gap: 12px;
+    margin-top: 5px;
+  }
+
+  .cmr .desc-links a {
+    font-weight: 700;
+    color: var(--light);
+    text-decoration: underline;
+    text-decoration-color: var(--rule);
+    text-underline-offset: 2px;
+  }
+
+  .cmr .desc-links a:hover {
+    color: #f3efa0;
   }
 
   .banner {
