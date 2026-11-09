@@ -12,7 +12,7 @@ This site serves as a hub for my professional experience, selected projects, and
 
 | Layer       | Technology                          |
 | ----------- | ----------------------------------- |
-| Framework   | [Astro](https://astro.build/) v5    |
+| Framework   | [Astro](https://astro.build/) v7    |
 | Language    | TypeScript                          |
 | Styling     | Vanilla CSS (custom properties)     |
 | Hosting     | GitHub Pages (static output)        |
